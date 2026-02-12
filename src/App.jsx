@@ -7,7 +7,7 @@ import {
   highlights,
   profile,
   projects,
-  skills
+  skillGroups
 } from "./data";
 
 const navItems = [
@@ -63,17 +63,26 @@ function App() {
   return (
     <div className="page">
       <header className="site-header">
-        <a className="brand" href="#">
-          {profile.name}
-        </a>
-        <button
-          className="theme-toggle"
-          type="button"
-          onClick={() => setTheme((prev) => (prev === "dark" ? "light" : "dark"))}
-          aria-label="Toggle dark and light mode"
-        >
-          {theme === "dark" ? "Light" : "Dark"}
-        </button>
+        <nav className={`nav ${mobileOpen ? "open" : ""}`}>
+          {navItems.map((item) => (
+            <a key={item.id} href={`#${item.id}`} onClick={closeMobile}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+        <div className="header-controls">
+          <button
+            className="theme-toggle"
+            type="button"
+            onClick={() =>
+              setTheme((prev) => (prev === "dark" ? "light" : "dark"))
+            }
+            aria-label="Toggle dark and light mode"
+            title="Toggle theme"
+          >
+            <span aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span>
+          </button>
+        </div>
         <button
           className="menu-toggle"
           type="button"
@@ -84,29 +93,30 @@ function App() {
           <span />
           <span />
         </button>
-        <nav className={`nav ${mobileOpen ? "open" : ""}`}>
-          {navItems.map((item) => (
-            <a key={item.id} href={`#${item.id}`} onClick={closeMobile}>
-              {item.label}
-            </a>
-          ))}
-        </nav>
       </header>
 
       <main>
         <section className="hero reveal">
-          <p className="eyebrow">{profile.role}</p>
-          <h1>{profile.name}</h1>
-          <p className="hero-copy">{profile.headline}</p>
-          <p className="meta">{profile.location}</p>
-          <div className="hero-actions">
-            <a href={profile.linkedin} target="_blank" rel="noreferrer">
-              LinkedIn
-            </a>
-            <a href={profile.github} target="_blank" rel="noreferrer">
-              GitHub
-            </a>
-            <a href={profile.resumeLabel}>Resume</a>
+          <div className="hero-layout">
+            <div className="hero-main">
+              <p className="eyebrow">{profile.role}</p>
+              <h1>{profile.name}</h1>
+              <p className="hero-copy">{profile.headline}</p>
+              <p className="meta">{profile.location}</p>
+              <p className="meta">{profile.visaStatus}</p>
+              <div className="hero-actions">
+                <a href={profile.linkedin} target="_blank" rel="noreferrer">
+                  LinkedIn
+                </a>
+                <a href={profile.github} target="_blank" rel="noreferrer">
+                  GitHub
+                </a>
+                <a href={profile.resumeLabel}>Resume</a>
+              </div>
+            </div>
+            <div className="hero-photo">
+              <img className="avatar" src={profile.avatar} alt="Darshan Bhamare" />
+            </div>
           </div>
           <div className="stats">
             {highlights.map((item) => (
@@ -121,16 +131,25 @@ function App() {
         <section id="about" className="block reveal">
           <h2>About</h2>
           <p>
-            I am targeting mid and senior opportunities in Cloud Operations,
-            DevOps, Site Reliability Engineering, Platform Engineering, and SME
-            Linux/Windows System Administration. I am currently based for UK
-            opportunities and available for relocation and remote roles.
+            I am seeking mid- to senior-level opportunities in Cloud
+            Operations, DevOps, Site Reliability Engineering, Platform
+            Engineering, and Linux/Windows Systems Administration. I am
+            currently based in the UK and available for relocation, remote
+            roles, and opportunities worldwide.
           </p>
+          <h3 className="subheading">Tools & Technologies</h3>
           <div className="chip-wrap">
-            {skills.map((skill) => (
-              <span className="chip" key={skill}>
-                {skill}
-              </span>
+            {skillGroups.map((group) => (
+              <article className="skill-group" key={group.title}>
+                <h3>{group.title}</h3>
+                <div className="chip-wrap">
+                  {group.items.map((item) => (
+                    <span className="chip" key={item}>
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </article>
             ))}
           </div>
         </section>

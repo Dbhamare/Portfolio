@@ -3,53 +3,98 @@ export const profile = {
   role: "Cloud Operations | DevOps | SRE | Platform Engineer",
   headline:
     "Cloud engineer with hands-on experience managing scalable AWS/Azure infrastructure, Linux and Windows operations, and automation-first reliability improvements.",
-  location: "United Kingdom (open to relocate anywhere) | Remote",
+  location: "United Kingdom (open to relocate) | Remote Roles",
+  visaStatus: "Graduate Route (Post-Study Work Visa) | Valid until March 2028",
   email: "darsh.bhamare.uk@gmail.com",
   linkedin: "https://linkedin.com/in/darshan-bhamare-cloud",
   github: "https://github.com/Dbhamare",
-  resumeLabel: "/Darshan CV Latest Updated.pdf"
+  resumeLabel: "/Darshan CV Latest Updated.pdf",
+  avatar: "/profile.jpg"
 };
 
-export const skills = [
-  "AWS",
-  "Azure",
-  "Docker",
-  "Kubernetes",
-  "Terraform",
-  "CI/CD",
-  "Linux",
-  "Windows Server",
-  "Python",
-  "Node.js",
-  "React",
-  "DNS",
-  "FTP",
-  "SSL",
-  "WHM/cPanel",
-  "Plesk",
-  "Nagios",
-  "Active Directory",
-  "Group Policy",
-  "Monitoring",
-  "System Design"
+export const skillGroups = [
+  {
+    title: "Cloud Platforms",
+    items: ["AWS", "Azure", "IBM Cloud (IKS)"]
+  },
+  {
+    title: "Containers & Orchestration",
+    items: ["Docker", "Kubernetes", "AWS EKS", "Azure AKS", "IBM IKS", "Helm"]
+  },
+  {
+    title: "CI/CD & Automation",
+    items: ["Jenkins", "GitHub", "GitHub Actions", "Terraform", "Ansible", "Scripting"]
+  },
+  {
+    title: "Monitoring & Reliability",
+    items: [
+      "AWS CloudWatch",
+      "Nagios",
+      "Grafana",
+      "Prometheus",
+      "Datadog",
+      "Loki",
+      "Elastic Load Balancing",
+      "Auto Scaling",
+      "Kubernetes self-healing"
+    ]
+  },
+  {
+    title: "Security & Networking",
+    items: ["IAM Roles/Policies", "Security Groups", "NACLs", "AWS WAF", "VPC", "DNS", "SSL", "FTP"]
+  },
+  {
+    title: "Platforms & Databases",
+    items: [
+      "Linux",
+      "Windows Server",
+      "Active Directory",
+      "Group Policy",
+      "WHM/cPanel",
+      "Plesk",
+      "AWS MSK",
+      "ElasticSearch",
+      "MongoDB",
+      "RDS",
+      "S3"
+    ]
+  }
 ];
 
 export const highlights = [
   {
     label: "Years of Experience",
-    value: "2.5+"
+    value: "4+"
   },
   {
     label: "Cloud Operations Roles",
-    value: "2"
+    value: "3"
   },
   {
     label: "Certifications",
-    value: "3"
+    value: "2"
   }
 ];
 
 export const experience = [
+  {
+    company:
+      "Conga (Apttus Corporation) | Aress Software & Education Technologies (P) Ltd | Nashik, India",
+    title: "Cloud Operations Engineer Contractor",
+    duration: "May 2023 - Aug 2024",
+    points: [
+      "Administered GitHub repositories, implemented CI/CD pipelines, and supported Agile workflows.",
+      "Designed and implemented Azure AKS clusters, Azure Functions, Storage, Databases, Developer Tools, and monitoring solutions for scalable applications.",
+      "Applied AWS best practices for security, compliance, performance, and cost optimization.",
+      "Configured IAM roles/policies, Security Groups, NACLs, and WAF to strengthen infrastructure security.",
+      "Managed AWS MSK, ElasticSearch, and MongoDB clusters with performance tuning and backup strategies.",
+      "Automated infrastructure provisioning and deployments using Terraform, Ansible, and Jenkins, reducing manual effort by 60%.",
+      "Built and optimized Jenkins pipelines for CI/CD, accelerating release cycles from 2 weeks to 3 days.",
+      "Deployed microservices on AWS EKS, Azure AKS, and IBM IKS using Helm, improving scalability and reliability.",
+      "Architected high-availability systems with Elastic Load Balancing, Auto Scaling, and Kubernetes self-healing.",
+      "Led and mentored 10-12 junior engineers on Jenkins, Helm, Kubernetes (EKS/AKS/IKS), MSK, MongoDB, and scripting."
+    ]
+  },
   {
     company: "Aress Software & Education Technologies (P) Ltd | Nashik, India",
     title: "Cloud Operations Engineer",
@@ -88,9 +133,8 @@ export const projects = [
 ];
 
 export const certifications = [
-  "Programming in C and C++ (Krish Academy)",
-  "Core Java and Advanced Java (Krish Academy)",
-  "Participation in Equinox event held by Computer Department, KKWIEER, Nashik"
+  "Programming in C and C++",
+  "Core Java and Advanced Java"
 ];
 
 export const education = [
