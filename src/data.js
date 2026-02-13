@@ -16,7 +16,11 @@ export const profile = {
 export const skillGroups = [
   {
     title: "Cloud Platforms",
-    items: ["AWS", "Azure", "IBM Cloud (IKS)"]
+    items: [
+      "AWS (EKS, MSK, EC2, S3, RDS, IAM)",
+      "Azure (AKS, Functions, App Services, Storage, Databases, Security, Monitoring)",
+      "IBM Cloud (Containers, Databases, DevOps, Networking, Security, Storage, Observability)"
+    ]
   },
   {
     title: "Containers & Orchestration",
@@ -24,17 +28,28 @@ export const skillGroups = [
   },
   {
     title: "CI/CD & Automation",
-    items: ["Jenkins", "GitHub", "GitHub Actions", "Terraform", "Ansible", "Scripting"]
+    items: [
+      "Jenkins",
+      "GitHub",
+      "GitHub Actions",
+      "Terraform",
+      "Helm",
+      "Ansible",
+      "CloudFormation",
+      "CI/CD Pipelines"
+    ]
   },
   {
     title: "Monitoring & Reliability",
     items: [
       "AWS CloudWatch",
+      "Azure Monitor",
       "Nagios",
       "Grafana",
       "Prometheus",
       "Datadog",
       "Loki",
+      "ELK Stack (Elasticsearch, Logstash, Kibana)",
       "Elastic Load Balancing",
       "Auto Scaling",
       "Kubernetes self-healing"
@@ -42,7 +57,21 @@ export const skillGroups = [
   },
   {
     title: "Security & Networking",
-    items: ["IAM Roles/Policies", "Security Groups", "NACLs", "AWS WAF", "VPC", "DNS", "SSL", "FTP"]
+    items: [
+      "IAM",
+      "IAM Roles/Policies",
+      "AWS WAF",
+      "Security Groups",
+      "NACLs",
+      "ACLs",
+      "Firewalls",
+      "SSL/TLS",
+      "VPC",
+      "Encryption",
+      "Compliance (ISO, SOC 2, GDPR)",
+      "DNS",
+      "FTP"
+    ]
   },
   {
     title: "Platforms & Databases",
@@ -56,8 +85,61 @@ export const skillGroups = [
       "AWS MSK",
       "ElasticSearch",
       "MongoDB",
+      "PostgreSQL",
+      "SQL Databases",
       "RDS",
       "S3"
+    ]
+  },
+  {
+    title: "Scripting & IaC",
+    items: ["Python", "Shell Scripting", "YAML"]
+  },
+  {
+    title: "Collaboration & Tools",
+    items: ["Jira", "Confluence", "ServiceNow", "FreshService", "Git"]
+  },
+  {
+    title: "Developer Tools",
+    items: [
+      "Git",
+      "Docker",
+      "Google Cloud Platform",
+      "VS Code",
+      "PyCharm",
+      "IntelliJ",
+      "Eclipse"
+    ]
+  },
+  {
+    title: "Languages & Frameworks",
+    items: [
+      "Java",
+      "Python",
+      "C/C++",
+      "SQL",
+      "JavaScript",
+      "HTML/CSS",
+      "React",
+      "Node.js",
+      "Flask",
+      "JUnit",
+      "WordPress",
+      "Material-UI",
+      "REST APIs"
+    ]
+  },
+  {
+    title: "Leadership & Collaboration",
+    items: [
+      "Problem Solving",
+      "Decision Making",
+      "Leadership",
+      "Strategic Planning",
+      "Documentation",
+      "Adaptability",
+      "Team Mentoring",
+      "DevOps Best Practices"
     ]
   }
 ];

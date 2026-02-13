@@ -21,6 +21,10 @@ const navItems = [
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [projectFilter, setProjectFilter] = useState("All");
+  const [skillQuery, setSkillQuery] = useState("");
+  const [openSkillGroups, setOpenSkillGroups] = useState(
+    () => new Set(skillGroups.slice(0, 2).map((group) => group.title))
+  );
   const [theme, setTheme] = useState(() => {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "light" || savedTheme === "dark") return savedTheme;
@@ -28,6 +32,7 @@ function App() {
       ? "dark"
       : "light";
   });
+  const [photoOpen, setPhotoOpen] = useState(false);
 
   const categories = useMemo(
     () => ["All", ...new Set(projects.map((item) => item.category))],
@@ -37,6 +42,23 @@ function App() {
     if (projectFilter === "All") return projects;
     return projects.filter((item) => item.category === projectFilter);
   }, [projectFilter]);
+  const filteredSkillGroups = useMemo(() => {
+    const query = skillQuery.trim().toLowerCase();
+    if (!query) return skillGroups;
+
+    return skillGroups
+      .map((group) => {
+        const titleMatch = group.title.toLowerCase().includes(query);
+        if (titleMatch) return group;
+
+        const matchedItems = group.items.filter((item) =>
+          item.toLowerCase().includes(query)
+        );
+        if (!matchedItems.length) return null;
+        return { ...group, items: matchedItems };
+      })
+      .filter(Boolean);
+  }, [skillQuery]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -59,6 +81,16 @@ function App() {
   }, [theme]);
 
   const closeMobile = () => setMobileOpen(false);
+  const toggleSkillGroup = (title) =>
+    setOpenSkillGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(title)) next.delete(title);
+      else next.add(title);
+      return next;
+    });
+  const expandAllSkillGroups = () =>
+    setOpenSkillGroups(new Set(filteredSkillGroups.map((group) => group.title)));
+  const collapseAllSkillGroups = () => setOpenSkillGroups(new Set());
 
   return (
     <div className="page">
@@ -100,7 +132,22 @@ function App() {
           <div className="hero-layout">
             <div className="hero-main">
               <p className="eyebrow">{profile.role}</p>
-              <h1>{profile.name}</h1>
+              <div className="hero-name-row">
+                <h1>{profile.name}</h1>
+                <button
+                  type="button"
+                  className="avatar-trigger avatar-trigger-mobile"
+                  onClick={() => setPhotoOpen(true)}
+                  aria-label="Open full profile photo"
+                >
+                  <img
+                    className="avatar-mobile"
+                    src={profile.avatar}
+                    alt="Darshan Bhamare"
+                  />
+                  <span className="avatar-hint">Click to enlarge</span>
+                </button>
+              </div>
               <p className="hero-copy">{profile.headline}</p>
               <p className="meta">{profile.location}</p>
               <p className="meta">{profile.visaStatus}</p>
@@ -117,7 +164,15 @@ function App() {
               </div>
             </div>
             <div className="hero-photo">
-              <img className="avatar" src={profile.avatar} alt="Darshan Bhamare" />
+              <button
+                type="button"
+                className="avatar-trigger"
+                onClick={() => setPhotoOpen(true)}
+                aria-label="Open full profile photo"
+              >
+                <img className="avatar" src={profile.avatar} alt="Darshan Bhamare" />
+                <span className="avatar-hint">Click to enlarge</span>
+              </button>
             </div>
           </div>
           <div className="stats">
@@ -139,20 +194,51 @@ function App() {
             currently based in the UK and available for relocation, remote
             roles, and opportunities worldwide.
           </p>
-          <h3 className="subheading">Tools & Technologies</h3>
-          <div className="chip-wrap">
-            {skillGroups.map((group) => (
-              <article className="skill-group" key={group.title}>
-                <h3>{group.title}</h3>
-                <div className="chip-wrap">
-                  {group.items.map((item) => (
-                    <span className="chip" key={item}>
-                      {item}
+          <h3 className="subheading">Tools, Technologies & Skills</h3>
+          <div className="skills-toolbar">
+            <input
+              type="text"
+              className="skill-search"
+              value={skillQuery}
+              onChange={(e) => setSkillQuery(e.target.value)}
+              placeholder="Search skills..."
+              aria-label="Search tools and technologies"
+            />
+            <div className="skills-actions">
+              <button type="button" onClick={expandAllSkillGroups}>
+                Expand all
+              </button>
+              <button type="button" onClick={collapseAllSkillGroups}>
+                Collapse all
+              </button>
+            </div>
+          </div>
+          <div className="skill-grid">
+            {filteredSkillGroups.map((group) => {
+              const isOpen =
+                skillQuery.trim() !== "" || openSkillGroups.has(group.title);
+              return (
+                <article className="skill-group" key={group.title}>
+                  <button
+                    type="button"
+                    className="skill-group-toggle"
+                    onClick={() => toggleSkillGroup(group.title)}
+                  >
+                    <h3>{group.title}</h3>
+                    <span className={`skill-chevron ${isOpen ? "open" : ""}`}>
+                      ▾
                     </span>
-                  ))}
-                </div>
-              </article>
-            ))}
+                  </button>
+                  <div className={`skill-items ${isOpen ? "open" : ""}`}>
+                    {group.items.map((item) => (
+                      <span className="chip" key={item}>
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </section>
 
@@ -261,6 +347,31 @@ function App() {
           </div>
         </section>
       </main>
+
+      {photoOpen && (
+        <div
+          className="photo-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Profile photo preview"
+          onClick={() => setPhotoOpen(false)}
+        >
+          <button
+            type="button"
+            className="photo-close"
+            aria-label="Close photo preview"
+            onClick={() => setPhotoOpen(false)}
+          >
+            ×
+          </button>
+          <img
+            className="photo-preview"
+            src={profile.avatar}
+            alt="Darshan Bhamare full photo"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 }
