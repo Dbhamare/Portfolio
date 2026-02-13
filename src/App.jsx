@@ -61,18 +61,40 @@ function App() {
   }, [skillQuery]);
 
   useEffect(() => {
+    const hidden = Array.from(document.querySelectorAll(".reveal"));
+    if (!hidden.length) return undefined;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add("is-visible");
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0, rootMargin: "0px 0px -12% 0px" }
     );
 
-    const hidden = document.querySelectorAll(".reveal");
-    hidden.forEach((el) => observer.observe(el));
-    return () => hidden.forEach((el) => observer.unobserve(el));
+    hidden.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top <= window.innerHeight * 0.95) {
+        el.classList.add("is-visible");
+      } else {
+        observer.observe(el);
+      }
+    });
+
+    // Safety fallback so fast-scroll never leaves sections invisible.
+    const fallbackTimer = window.setTimeout(() => {
+      hidden.forEach((el) => el.classList.add("is-visible"));
+      observer.disconnect();
+    }, 1200);
+
+    return () => {
+      window.clearTimeout(fallbackTimer);
+      observer.disconnect();
+    };
   }, []);
 
   useEffect(() => {

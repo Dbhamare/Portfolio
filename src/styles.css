@@ -1,26 +1,26 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
 
 :root {
-  --bg: #020a12;
-  --bg-soft: #091724;
-  --card: rgba(255, 255, 255, 0.045);
-  --text: #f2f8ff;
-  --muted: #9ab1c3;
-  --line: rgba(255, 255, 255, 0.12);
+  --bg: #000000;
+  --bg-soft: #050505;
+  --card: rgba(255, 255, 255, 0.035);
+  --text: #f5f7fb;
+  --muted: #a2adbb;
+  --line: rgba(255, 255, 255, 0.11);
   --accent: #30d7a9;
   --accent-soft: #bdf7e8;
-  --surface-strong: rgba(2, 10, 18, 0.82);
-  --surface-mobile-nav: rgba(2, 10, 18, 0.98);
+  --surface-strong: rgba(0, 0, 0, 0.84);
+  --surface-mobile-nav: rgba(0, 0, 0, 0.96);
   --chip-bg: rgba(255, 255, 255, 0.022);
-  --project-text: #c2d6e6;
-  --timeline-text: #c7d9e8;
+  --project-text: #c7d0db;
+  --timeline-text: #cdd6e1;
   --contact-bg: rgba(255, 255, 255, 0.03);
-  --bg-grad-1: radial-gradient(circle at 15% 20%, #10364d 0%, transparent 33%);
-  --bg-grad-2: radial-gradient(circle at 85% 0%, #0a3f34 0%, transparent 28%);
-  --bg-grad-3: linear-gradient(160deg, #01060d 0%, #020a12 100%);
+  --bg-grad-1: radial-gradient(circle at 15% 20%, #071015 0%, transparent 34%);
+  --bg-grad-2: radial-gradient(circle at 85% 0%, #07110e 0%, transparent 30%);
+  --bg-grad-3: linear-gradient(160deg, #000000 0%, #000000 100%);
   --card-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
   --hover-lift: 0 16px 32px rgba(0, 0, 0, 0.42);
-  --section-glow: rgba(48, 215, 169, 0.12);
+  --section-glow: rgba(48, 215, 169, 0.08);
   --max: 1100px;
 }
 
@@ -49,6 +49,14 @@
 
 * {
   box-sizing: border-box;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
 }
 
 @keyframes softFadeUp {
@@ -162,16 +170,15 @@
 @keyframes blurIn {
   from {
     opacity: 0;
-    backdrop-filter: blur(0);
   }
   to {
     opacity: 1;
-    backdrop-filter: blur(3px);
   }
 }
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -181,8 +188,8 @@ body {
   background: var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3);
   min-height: 100vh;
   transition: background 0.45s ease, color 0.25s ease;
-  background-size: 130% 130%, 130% 130%, 100% 100%;
-  animation: gradientShift 14s ease-in-out infinite alternate;
+  background-size: 120% 120%, 120% 120%, 100% 100%;
+  overflow-x: hidden;
 }
 
 body::before {
@@ -194,9 +201,7 @@ body::before {
     linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   background-size: 42px 42px;
-  mask-image: radial-gradient(circle at 35% 20%, black, transparent 70%);
-  opacity: 0.22;
-  animation: driftGrid 9s ease-in-out infinite alternate;
+  opacity: 0.1;
 }
 
 a {
@@ -205,6 +210,7 @@ a {
 }
 
 .page {
+  width: 100%;
   max-width: var(--max);
   margin: 0 auto;
   padding: 1.2rem 1rem 3rem;
@@ -222,15 +228,12 @@ a {
   border-radius: 999px;
   padding: 0.65rem 0.9rem;
   background: var(--surface-strong);
-  backdrop-filter: blur(12px);
   box-shadow: var(--card-shadow);
   animation: softFadeUp 0.45s ease both;
 }
 
 .site-header:hover {
-  animation:
-    softFadeUp 0.45s ease both,
-    headerDrift 1.8s ease-in-out infinite alternate;
+  animation: softFadeUp 0.3s ease both;
 }
 
 .header-controls {
@@ -354,7 +357,6 @@ a {
   background: radial-gradient(circle, var(--section-glow), transparent 65%);
   filter: blur(2px);
   pointer-events: none;
-  animation: glowPulse 2.6s ease-in-out infinite alternate;
 }
 
 .eyebrow {
@@ -386,7 +388,6 @@ h1 {
   background: transparent;
   display: inline-flex;
   cursor: pointer;
-  animation: floatY 2.8s ease-in-out infinite alternate;
 }
 
 .avatar-hint {
@@ -436,7 +437,6 @@ h1 {
   place-items: center;
   padding: 1rem;
   background: rgba(2, 11, 18, 0.86);
-  backdrop-filter: blur(3px);
   animation: blurIn 0.22s ease both;
 }
 
@@ -535,7 +535,6 @@ h1 {
   background: var(--card);
   box-shadow: var(--card-shadow);
   transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
-  animation: breatheBorder 2.8s ease-in-out infinite alternate;
 }
 
 .stat-card:hover {
@@ -717,6 +716,8 @@ p {
 .skill-group-toggle h3 {
   margin: 0;
   font-size: 0.8rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
   text-align: left;
   color: var(--text);
 }
@@ -895,73 +896,7 @@ p {
 .reveal.is-visible .timeline-card,
 .reveal.is-visible .project-card,
 .reveal.is-visible .skill-group {
-  animation: softFadeUp 0.5s ease both;
-}
-
-.reveal.is-visible .chip {
-  animation: chipPop 0.34s ease both;
-}
-
-.reveal.is-visible .chip:nth-child(2) {
-  animation-delay: 0.03s;
-}
-
-.reveal.is-visible .chip:nth-child(3) {
-  animation-delay: 0.06s;
-}
-
-.reveal.is-visible .chip:nth-child(4) {
-  animation-delay: 0.09s;
-}
-
-.reveal.is-visible .stat-card:nth-child(2),
-.reveal.is-visible .timeline-card:nth-child(2),
-.reveal.is-visible .project-card:nth-child(2),
-.reveal.is-visible .skill-group:nth-child(2) {
-  animation-delay: 0.06s;
-}
-
-.reveal.is-visible .stat-card:nth-child(3),
-.reveal.is-visible .timeline-card:nth-child(3),
-.reveal.is-visible .project-card:nth-child(3),
-.reveal.is-visible .skill-group:nth-child(3) {
-  animation-delay: 0.12s;
-}
-
-.reveal.is-visible .timeline-card:nth-child(4),
-.reveal.is-visible .project-card:nth-child(4),
-.reveal.is-visible .skill-group:nth-child(4) {
-  animation-delay: 0.18s;
-}
-
-.reveal.is-visible .timeline-card:nth-child(5),
-.reveal.is-visible .project-card:nth-child(5),
-.reveal.is-visible .skill-group:nth-child(5) {
-  animation-delay: 0.24s;
-}
-
-.reveal.is-visible .hero-main > * {
-  animation: softFadeUp 0.42s ease both;
-}
-
-.reveal.is-visible .hero-main > *:nth-child(2) {
-  animation-delay: 0.05s;
-}
-
-.reveal.is-visible .hero-main > *:nth-child(3) {
-  animation-delay: 0.1s;
-}
-
-.reveal.is-visible .hero-main > *:nth-child(4) {
-  animation-delay: 0.15s;
-}
-
-.reveal.is-visible .hero-main > *:nth-child(5) {
-  animation-delay: 0.2s;
-}
-
-.reveal.is-visible .hero-main > *:nth-child(6) {
-  animation-delay: 0.25s;
+  animation: softFadeUp 0.32s ease both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -991,13 +926,13 @@ p {
 
 .reveal {
   opacity: 0;
-  transform: translateY(18px) scale(0.99);
-  transition: 0.7s ease;
+  transform: translateY(12px);
+  transition: 0.38s ease;
 }
 
 .reveal.is-visible {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
 }
 
 @media (max-width: 820px) {
@@ -1108,8 +1043,6 @@ p {
   }
 
   .hero::after {
-    right: -80px;
-    width: 190px;
-    height: 190px;
+    display: none;
   }
 }
