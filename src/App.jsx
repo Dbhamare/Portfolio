@@ -103,6 +103,7 @@ function App() {
   }, [theme]);
 
   const closeMobile = () => setMobileOpen(false);
+  const goToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
   const toggleSkillGroup = (title) =>
     setOpenSkillGroups((prev) => {
       const next = new Set(prev);
@@ -118,6 +119,9 @@ function App() {
     <div className="page">
       <header className="site-header">
         <nav className={`nav ${mobileOpen ? "open" : ""}`}>
+          <button type="button" className="nav-btn" onClick={goToTop}>
+            Top
+          </button>
           {navItems.map((item) => (
             <a key={item.id} href={`#${item.id}`} onClick={closeMobile}>
               {item.label}
