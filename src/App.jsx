@@ -249,6 +249,7 @@ function App() {
           </p>
           <div className="hero-actions">
             <a href={`mailto:${profile.email}`}>Email</a>
+            <a href={`tel:${profile.phone}`}>Call</a>
             <a href={profile.linkedin} target="_blank" rel="noreferrer">
               LinkedIn
             </a>

@@ -9,7 +9,8 @@ export const profile = {
   linkedin: "https://linkedin.com/in/darshan-bhamare-cloud",
   github: "https://github.com/Dbhamare",
   resumeLabel: "/Darshan CV Latest Updated.pdf",
-  avatar: "/profile.jpg"
+  avatar: "/profile.jpg",
+  phone: "+447818987884"
 };
 
 export const skillGroups = [
@@ -134,7 +135,7 @@ export const projects = [
 
 export const certifications = [
   "Programming in C and C++",
-  "Core Java and Advanced Java"
+  "Programming in Core and Advanced Java"
 ];
 
 export const education = [
