@@ -111,7 +111,9 @@ function App() {
                 <a href={profile.github} target="_blank" rel="noreferrer">
                   GitHub
                 </a>
-                <a href={profile.resumeLabel}>Resume</a>
+                <a href={profile.resumeLabel} target="_blank" rel="noreferrer">
+                  Resume
+                </a>
               </div>
             </div>
             <div className="hero-photo">
