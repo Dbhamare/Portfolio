@@ -8,7 +8,7 @@ export const profile = {
   email: "darsh.bhamare.uk@gmail.com",
   linkedin: "https://linkedin.com/in/darshan-bhamare-cloud",
   github: "https://github.com/Dbhamare",
-  resumeLabel: "/Darshan CV Latest Updated.pdf",
+  resumeLabel: "/Resume.pdf",
   avatar: "/profile.jpg",
   phone: "+447818987884"
 };
