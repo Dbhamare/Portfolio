@@ -263,37 +263,37 @@ const techIconLibrary = [
   {
     id: "servicenow",
     keys: ["servicenow"],
-    src: "https://cdn.simpleicons.org/servicenow/00A2E8",
+    src: "/icons/servicenow.svg",
     alt: "ServiceNow"
   },
   {
     id: "freshservice",
     keys: ["freshservice"],
-    src: "https://cdn.simpleicons.org/freshworks/8CC63E",
+    src: "/icons/freshservice.svg",
     alt: "Freshservice"
   },
   {
     id: "ibm",
     keys: ["ibm cloud"],
-    src: "https://cdn.simpleicons.org/ibm/052FAD",
+    src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/ibm.svg",
     alt: "IBM"
   },
   {
     id: "datadog",
     keys: ["datadog"],
-    src: "https://cdn.simpleicons.org/datadog/632CA6",
+    src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/datadog.svg",
     alt: "Datadog"
   },
   {
     id: "loki",
     keys: ["loki"],
-    src: "https://cdn.simpleicons.org/grafana/F46800",
+    src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/grafana.svg",
     alt: "Loki"
   },
   {
     id: "nagios",
     keys: ["nagios"],
-    src: "https://cdn.simpleicons.org/nagios/4C4C4C",
+    src: "/icons/nagios.svg",
     alt: "Nagios"
   }
 ];
@@ -384,7 +384,7 @@ const skillHeaderPreviewIcons = {
     },
     {
       name: "IBM Cloud",
-      src: "https://cdn.simpleicons.org/ibm/052FAD",
+      src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/ibm.svg",
       alt: "IBM Cloud"
     }
   ],
@@ -440,7 +440,7 @@ const skillHeaderPreviewIcons = {
     },
     {
       name: "Datadog",
-      src: "https://cdn.simpleicons.org/datadog/632CA6",
+      src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/datadog.svg",
       alt: "Datadog"
     }
   ],
@@ -807,11 +807,11 @@ const architectureServiceIconMap = {
     alt: "AWS CloudWatch"
   },
   Datadog: {
-    src: "https://cdn.simpleicons.org/datadog/632CA6",
+    src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/datadog.svg",
     alt: "Datadog"
   },
   PagerDuty: {
-    src: "https://cdn.simpleicons.org/pagerduty/06AC38",
+    src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/pagerduty.svg",
     alt: "PagerDuty"
   }
 };
@@ -888,6 +888,13 @@ const getArchitectureIcon = (label = "") =>
   architectureServiceIconMap[label] || findTechIcon(label) || fallbackIconForLabel(label);
 
 const galleryPlaceholderSrc = "/gallery/placeholder-photo.svg";
+const defaultGalleryImageWidth = 1600;
+const defaultGalleryImageHeight = 1200;
+const profileImageWidth = 2550;
+const profileImageHeight = 3864;
+const inlineTechIconSize = 16;
+const skillPreviewIconSize = 20;
+const orbitIconSize = 36;
 
 const handleGalleryImageError = (event) => {
   event.currentTarget.onerror = null;
@@ -901,10 +908,10 @@ const GalleryOverlay = ({ title, description }) => (
   </figcaption>
 );
 
-const openPhotoOnKeyboard = (event, onOpenPhoto, src, alt) => {
+const openPhotoOnKeyboard = (event, onOpenPhoto, photo) => {
   if (event.key !== "Enter" && event.key !== " ") return;
   event.preventDefault();
-  onOpenPhoto(src, alt);
+  onOpenPhoto(photo);
 };
 
 const GalleryImageCard = ({ image, onOpenPhoto }) => (
@@ -913,15 +920,16 @@ const GalleryImageCard = ({ image, onOpenPhoto }) => (
       className="gallery-card-content"
       src={image.src}
       alt={image.alt}
+      width={image.width || defaultGalleryImageWidth}
+      height={image.height || defaultGalleryImageHeight}
       loading="lazy"
+      decoding="async"
       onError={handleGalleryImageError}
       role="button"
       tabIndex={0}
       aria-label={`Open ${image.title}`}
-      onClick={() => onOpenPhoto(image.src, image.alt)}
-      onKeyDown={(event) =>
-        openPhotoOnKeyboard(event, onOpenPhoto, image.src, image.alt)
-      }
+      onClick={() => onOpenPhoto(image)}
+      onKeyDown={(event) => openPhotoOnKeyboard(event, onOpenPhoto, image)}
     />
     <GalleryOverlay title={image.title} description={image.description} />
   </figure>
@@ -936,12 +944,15 @@ const GalleryCollageCard = ({ item, onOpenPhoto }) => (
           type="button"
           className="gallery-collage-cell"
           aria-label={`Open ${item.title} photo ${index + 1}`}
-          onClick={() => onOpenPhoto(photo.src, photo.alt)}
+          onClick={() => onOpenPhoto(photo)}
         >
           <img
             src={photo.src}
             alt={photo.alt}
+            width={photo.width || defaultGalleryImageWidth}
+            height={photo.height || defaultGalleryImageHeight}
             loading="lazy"
+            decoding="async"
             onError={handleGalleryImageError}
           />
         </button>
@@ -1013,42 +1024,6 @@ function App() {
   }, [filteredSkillGroups, openSkillGroups, skillQuery]);
 
   useEffect(() => {
-    const hidden = Array.from(document.querySelectorAll(".reveal"));
-    if (!hidden.length) return undefined;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0, rootMargin: "0px 0px -12% 0px" }
-    );
-
-    hidden.forEach((el) => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top <= window.innerHeight * 0.95) {
-        el.classList.add("is-visible");
-      } else {
-        observer.observe(el);
-      }
-    });
-
-    const fallbackTimer = window.setTimeout(() => {
-      hidden.forEach((el) => el.classList.add("is-visible"));
-      observer.disconnect();
-    }, 1200);
-
-    return () => {
-      window.clearTimeout(fallbackTimer);
-      observer.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
   }, [theme]);
@@ -1064,11 +1039,24 @@ function App() {
 
   const closeMobile = () => setMobileOpen(false);
   const goToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
-  const openPhotoPreview = (src, alt) =>
+  const openPhotoPreview = (photoOrSrc, alt, width, height) => {
+    if (typeof photoOrSrc === "object" && photoOrSrc !== null) {
+      setActivePhoto({
+        src: photoOrSrc.src,
+        alt: photoOrSrc.alt || "Photo preview",
+        width: photoOrSrc.width || defaultGalleryImageWidth,
+        height: photoOrSrc.height || defaultGalleryImageHeight
+      });
+      return;
+    }
+
     setActivePhoto({
-      src,
-      alt: alt || "Photo preview"
+      src: photoOrSrc,
+      alt: alt || "Photo preview",
+      width: width || defaultGalleryImageWidth,
+      height: height || defaultGalleryImageHeight
     });
+  };
 
   const toggleSkillGroup = (title) =>
     setOpenSkillGroups((prev) => {
@@ -1170,12 +1158,25 @@ function App() {
                 type="button"
                 className="avatar-trigger"
                 onClick={() =>
-                  openPhotoPreview(profile.avatar, `${profile.name} full photo`)
+                  openPhotoPreview(
+                    profile.avatar,
+                    `${profile.name} full photo`,
+                    profileImageWidth,
+                    profileImageHeight
+                  )
                 }
                 aria-label="Open full profile photo"
               >
                 <div className="avatar-frame">
-                  <img className="avatar" src={profile.avatar} alt={profile.name} />
+                  <img
+                    className="avatar"
+                    src={profile.avatar}
+                    alt={profile.name}
+                    width={profileImageWidth}
+                    height={profileImageHeight}
+                    loading="eager"
+                    decoding="async"
+                  />
                 </div>
                 <span className="avatar-hint">Click to enlarge</span>
               </button>
@@ -1189,7 +1190,10 @@ function App() {
                   <img
                     src={icon.src}
                     alt={icon.name}
+                    width={orbitIconSize}
+                    height={orbitIconSize}
                     loading="lazy"
+                    decoding="async"
                     onError={(event) => handleIconLoadError(event, icon.name)}
                   />
                 </span>
@@ -1278,7 +1282,10 @@ function App() {
                                   <img
                                     src={icon.src}
                                     alt={icon.alt}
+                                    width={skillPreviewIconSize}
+                                    height={skillPreviewIconSize}
                                     loading="lazy"
+                                    decoding="async"
                                     onError={(event) =>
                                       handleIconLoadError(event, icon.name)
                                     }
@@ -1308,7 +1315,10 @@ function App() {
                                 className="inline-tech-icon"
                                 src={icon.src}
                                 alt={icon.alt}
+                                width={inlineTechIconSize}
+                                height={inlineTechIconSize}
                                 loading="lazy"
+                                decoding="async"
                                 onError={(event) =>
                                   handleIconLoadError(event, displayLabel)
                                 }
@@ -1383,7 +1393,10 @@ function App() {
                           className="inline-tech-icon"
                           src={icon.src}
                           alt={icon.alt}
+                          width={inlineTechIconSize}
+                          height={inlineTechIconSize}
                           loading="lazy"
+                          decoding="async"
                           onError={(event) =>
                             handleIconLoadError(event, service.name)
                           }
@@ -1428,7 +1441,10 @@ function App() {
                       className="inline-tech-icon"
                       src={getArchitectureIcon("EKS Managed Control Plane").src}
                       alt={getArchitectureIcon("EKS Managed Control Plane").alt}
+                      width={inlineTechIconSize}
+                      height={inlineTechIconSize}
                       loading="lazy"
+                      decoding="async"
                       onError={(event) =>
                         handleIconLoadError(event, "EKS Managed Control Plane")
                       }
@@ -1462,7 +1478,10 @@ function App() {
                                     className="inline-tech-icon"
                                     src={icon.src}
                                     alt={icon.alt}
+                                    width={inlineTechIconSize}
+                                    height={inlineTechIconSize}
                                     loading="lazy"
+                                    decoding="async"
                                     onError={(event) =>
                                       handleIconLoadError(event, service)
                                     }
@@ -1487,7 +1506,10 @@ function App() {
                                     className="inline-tech-icon"
                                     src={icon.src}
                                     alt={icon.alt}
+                                    width={inlineTechIconSize}
+                                    height={inlineTechIconSize}
                                     loading="lazy"
+                                    decoding="async"
                                     onError={(event) =>
                                       handleIconLoadError(event, service)
                                     }
@@ -1512,7 +1534,10 @@ function App() {
                                     className="inline-tech-icon"
                                     src={icon.src}
                                     alt={icon.alt}
+                                    width={inlineTechIconSize}
+                                    height={inlineTechIconSize}
                                     loading="lazy"
+                                    decoding="async"
                                     onError={(event) =>
                                       handleIconLoadError(event, service)
                                     }
@@ -1541,7 +1566,10 @@ function App() {
                             className="inline-tech-icon"
                             src={icon.src}
                             alt={icon.alt}
+                            width={inlineTechIconSize}
+                            height={inlineTechIconSize}
                             loading="lazy"
+                            decoding="async"
                             onError={(event) =>
                               handleIconLoadError(event, service)
                             }
@@ -1578,7 +1606,10 @@ function App() {
                               className="inline-tech-icon"
                               src={icon.src}
                               alt={icon.alt}
+                              width={inlineTechIconSize}
+                              height={inlineTechIconSize}
                               loading="lazy"
+                              decoding="async"
                               onError={(event) =>
                                 handleIconLoadError(event, stage)
                               }
@@ -1612,7 +1643,10 @@ function App() {
                               className="inline-tech-icon"
                               src={icon.src}
                               alt={icon.alt}
+                              width={inlineTechIconSize}
+                              height={inlineTechIconSize}
                               loading="lazy"
+                              decoding="async"
                               onError={(event) =>
                                 handleIconLoadError(event, stack.title)
                               }
@@ -1662,7 +1696,10 @@ function App() {
                             className="inline-tech-icon"
                             src={icon.src}
                             alt={icon.alt}
+                            width={inlineTechIconSize}
+                            height={inlineTechIconSize}
                             loading="lazy"
+                            decoding="async"
                             onError={(event) => handleIconLoadError(event, tool)}
                           />
                         )}
@@ -1714,7 +1751,7 @@ function App() {
         <section id="gallery" className="block reveal gallery-section">
           <h2>Beyond Work</h2>
           <p className="section-intro">
-            A quick snapshot of moments outside engineering.
+            A quick snapshot of moments outside engineering (Click to view the photos).
           </p>
 
           <div className="gallery-strip" role="list" aria-label="Beyond Work image gallery">
@@ -1773,6 +1810,10 @@ function App() {
             className="photo-preview"
             src={activePhoto.src}
             alt={activePhoto.alt}
+            width={activePhoto.width || defaultGalleryImageWidth}
+            height={activePhoto.height || defaultGalleryImageHeight}
+            loading="eager"
+            decoding="async"
             onError={handleGalleryImageError}
             onClick={(event) => event.stopPropagation()}
           />

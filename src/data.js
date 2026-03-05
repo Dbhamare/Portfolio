@@ -3,8 +3,8 @@ export const profile = {
   role: "Cloud Operations | DevOps | Infrastructure | SRE | Platform Engineer",
   headline:
     "Cloud engineer with hands-on experience managing scalable AWS/Azure infrastructure, Linux and Windows operations, and automation-first reliability improvements.",
-  location: "United Kingdom (open to relocate) | Remote Roles",
-  visaStatus: "Graduate Route (Post-Study Work Visa) | Valid until March 2028",
+  location: "United Kingdom | India | Remote | Relocation",
+  visaStatus: "Right to Work in the UK via Graduate Route Visa valid till March 2028.",
   email: "darsh.bhamare.uk@gmail.com",
   linkedin: "https://linkedin.com/in/darshan-bhamare-cloud",
   github: "https://github.com/Dbhamare",
@@ -386,38 +386,50 @@ export const galleryImages = [
     src: "/gallery/bike-goa.jpg",
     alt: "Riding in Goa",
     title: "Goa Rides",
-    description: "Exploring the coastal roads on two wheels."
+    description: "Exploring the coastal roads on two wheels.",
+    width: 1080,
+    height: 1920
   },
   {
     src: "/gallery/go-kart.jpg",
     alt: "Go-kart track",
     title: "Track Day",
-    description: "Weekend go-karting session."
+    description: "Weekend go-karting session.",
+    width: 1909,
+    height: 1080
   },
   {
     src: "/gallery/sunset.jpg",
     alt: "Sunset skyline",
     title: "City Sunset",
-    description: "Stopping to catch the view over the skyline."
+    description: "Stopping to catch the view over the skyline.",
+    width: 4000,
+    height: 2252
   },
   {
     src: "/gallery/rider.jpg",
     alt: "Rider on motorcycle",
     title: "Highway Miles",
-    description: "Nothing beats an open road at the end of the day."
+    description: "Nothing beats an open road at the end of the day.",
+    width: 2502,
+    height: 4032
   },
   {
     src: "/gallery/team-last-day.jpg",
     alt: "Cloud Engineering Team",
     title: "The Cloud Crew",
-    description: "Farewell shot with the engineering team on my last day."
+    description: "Farewell shot with the engineering team on my last day.",
+    width: 4000,
+    height: 2252
   },
   {
     src: "/gallery/employee-award.jpg",
     alt: "Receiving Employee of the Month award",
     title: "Employee of the Month",
     description:
-      "Receiving the award from my manager, Sufiyan Khan (Principal Cloud Architect)."
+      "Receiving the award from my manager, Sufiyan Khan (Principal Cloud Architect).",
+    width: 3610,
+    height: 2888
   },
   {
     type: "collage",
@@ -425,10 +437,30 @@ export const galleryImages = [
     description:
       "Inaugurating the new company cafe alongside the Director and Head of Technology. Named it 'Cloud Byte' because, well, the Cloud is the future!",
     images: [
-      { src: "/gallery/cafe-ribbon.jpg", alt: "Cutting ribbon" },
-      { src: "/gallery/cafe-signage.jpg", alt: "Cafe signage" },
-      { src: "/gallery/cafe-mgmt-1.jpg", alt: "Management group 1" },
-      { src: "/gallery/cafe-mgmt-2.jpg", alt: "Management group 2" }
+      {
+        src: "/gallery/cafe-ribbon.jpg",
+        alt: "Cutting ribbon",
+        width: 4000,
+        height: 3000
+      },
+      {
+        src: "/gallery/cafe-signage.jpg",
+        alt: "Cafe signage",
+        width: 4000,
+        height: 3000
+      },
+      {
+        src: "/gallery/cafe-mgmt-1.jpg",
+        alt: "Management group 1",
+        width: 4000,
+        height: 3000
+      },
+      {
+        src: "/gallery/cafe-mgmt-2.jpg",
+        alt: "Management group 2",
+        width: 4000,
+        height: 3000
+      }
     ]
   }
 ];

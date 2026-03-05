@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Darshan Cloud DevOps favicon</title>
+  <desc id="desc">Bold cloud and terminal icon for portfolio tab.</desc>
+
+  <rect width="64" height="64" rx="14" fill="#0f1822" />
+
+  <g fill="#28d9ad">
+    <circle cx="24" cy="31" r="10" />
+    <circle cx="36" cy="27" r="13" />
+    <circle cx="48" cy="33" r="9" />
+    <rect x="14" y="31" width="42" height="14" rx="7" />
+  </g>
+
+  <rect x="21" y="33" width="26" height="13" rx="3" fill="#0b141d" />
+  <path
+    d="M27 37.5l3.2 2.9L27 43.3"
+    fill="none"
+    stroke="#28d9ad"
+    stroke-width="2.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <line x1="33.5" y1="42.7" x2="40.8" y2="42.7" stroke="#28d9ad" stroke-width="2.2" stroke-linecap="round" />
+</svg>
