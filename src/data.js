@@ -1,6 +1,6 @@
 export const profile = {
   name: "Darshan Bhamare",
-  role: "Cloud Operations | DevOps | SRE | Platform Engineer",
+  role: "Cloud Operations | DevOps | Infrastructure | SRE | Platform Engineer",
   headline:
     "Cloud engineer with hands-on experience managing scalable AWS/Azure infrastructure, Linux and Windows operations, and automation-first reliability improvements.",
   location: "United Kingdom (open to relocate) | Remote Roles",
@@ -13,9 +13,104 @@ export const profile = {
   phone: "+447818987884"
 };
 
+export const orbitIcons = [
+  {
+    name: "AWS",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg"
+  },
+  {
+    name: "Linux",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg"
+  },
+  {
+    name: "Kubernetes",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg"
+  },
+  {
+    name: "Terraform",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg"
+  }
+];
+
+export const coreStack = [
+  {
+    name: "AWS",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg"
+  },
+  {
+    name: "Azure",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg"
+  },
+  {
+    name: "Kubernetes",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg"
+  },
+  {
+    name: "Terraform",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg"
+  },
+  {
+    name: "Docker",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"
+  },
+  {
+    name: "Jenkins",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jenkins/jenkins-original.svg"
+  },
+  {
+    name: "Linux",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg"
+  },
+  {
+    name: "Ansible",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ansible/ansible-original.svg"
+  },
+  {
+    name: "Helm",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/helm/helm-original.svg"
+  },
+  {
+    name: "Prometheus",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prometheus/prometheus-original.svg"
+  },
+  {
+    name: "Grafana",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/grafana/grafana-original.svg"
+  },
+  {
+    name: "MongoDB",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg"
+  },
+  {
+    name: "GitHub Actions",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+  },
+  {
+    name: "CloudWatch",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg"
+  },
+  {
+    name: "Azure Monitor",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg"
+  },
+  {
+    name: "AWS MSK",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg"
+  },
+  {
+    name: "ElasticSearch",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/elasticsearch/elasticsearch-original.svg"
+  },
+  {
+    name: "Git",
+    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
+  }
+];
+
 export const skillGroups = [
   {
     title: "Cloud Platforms",
+    preview: ["AWS", "Azure", "IBM Cloud", "EKS"],
     items: [
       "AWS (EKS, MSK, EC2, S3, RDS, IAM)",
       "Azure (AKS, Functions, App Services, Storage, Databases, Security, Monitoring)",
@@ -24,10 +119,12 @@ export const skillGroups = [
   },
   {
     title: "Containers & Orchestration",
+    preview: ["Docker", "Kubernetes", "AWS EKS", "Helm"],
     items: ["Docker", "Kubernetes", "AWS EKS", "Azure AKS", "IBM IKS", "Helm"]
   },
   {
     title: "CI/CD & Automation",
+    preview: ["Jenkins", "GitHub Actions", "Terraform", "Ansible"],
     items: [
       "Jenkins",
       "GitHub",
@@ -41,6 +138,7 @@ export const skillGroups = [
   },
   {
     title: "Monitoring & Reliability",
+    preview: ["AWS CloudWatch", "Grafana", "Prometheus", "Datadog"],
     items: [
       "AWS CloudWatch",
       "Azure Monitor",
@@ -57,6 +155,7 @@ export const skillGroups = [
   },
   {
     title: "Security & Networking",
+    preview: ["IAM", "AWS WAF", "Security Groups", "VPC"],
     items: [
       "IAM",
       "IAM Roles/Policies",
@@ -75,6 +174,7 @@ export const skillGroups = [
   },
   {
     title: "Platforms & Databases",
+    preview: ["Linux", "Windows Server", "MongoDB", "PostgreSQL"],
     items: [
       "Linux",
       "Windows Server",
@@ -93,14 +193,17 @@ export const skillGroups = [
   },
   {
     title: "Scripting & IaC",
+    preview: ["Python", "Shell Scripting", "YAML"],
     items: ["Python", "Shell Scripting", "YAML"]
   },
   {
     title: "Collaboration & Tools",
+    preview: ["Jira", "Confluence", "ServiceNow", "Git"],
     items: ["Jira", "Confluence", "ServiceNow", "FreshService", "Git"]
   },
   {
     title: "Developer Tools",
+    preview: ["Git", "Docker", "VS Code", "IntelliJ"],
     items: [
       "Git",
       "Docker",
@@ -113,6 +216,7 @@ export const skillGroups = [
   },
   {
     title: "Languages & Frameworks",
+    preview: ["Java", "Python", "React", "Node.js"],
     items: [
       "Java",
       "Python",
@@ -131,6 +235,7 @@ export const skillGroups = [
   },
   {
     title: "Leadership & Collaboration",
+    preview: ["Leadership", "Problem Solving", "Team Mentoring", "Strategic Planning"],
     items: [
       "Problem Solving",
       "Decision Making",
@@ -217,14 +322,14 @@ export const projects = [
 
 export const certifications = [
   "Programming in C and C++",
-  "Programming in Core and Advanced Java"
+  "Programming in Core Java and Advanced Java"
 ];
 
 export const education = [
   {
     degree: "MSc Cloud Computing",
     school: "University of Leicester | Leicester, UK",
-    duration: "Sep 2024 - Sep 2025"
+    duration: "Sep 2024 - Jan 2026"
   },
   {
     degree: "Bachelor of Business Administration (Computer Application)",
@@ -240,6 +345,90 @@ export const education = [
 
 export const achievements = [
   "Awarded as Performer of the Month multiple times at Aress Software & Education Technologies (P) Ltd.",
-  "Hospitality Head during the Equinox event conducted by Computer Department, KKWIEER, Nashik.",
-  "Interests: Bike riding, swimming, computer gaming, martial arts, table tennis, chess, tennis, badminton, and travelling."
+  "Hospitality Head during the Equinox event conducted by Computer Department, KKWIEER, Nashik."
+];
+
+export const architectureFlow = [
+  {
+    stage: "Source",
+    title: "GitHub",
+    detail: "Feature branches, PR reviews, policy checks"
+  },
+  {
+    stage: "CI",
+    title: "Jenkins / GitHub Actions",
+    detail: "Build, unit tests, security scans"
+  },
+  {
+    stage: "Artifact",
+    title: "Docker Registry",
+    detail: "Versioned images and immutable artifacts"
+  },
+  {
+    stage: "IaC",
+    title: "Terraform + Helm",
+    detail: "Provision infra and manage releases"
+  },
+  {
+    stage: "Runtime",
+    title: "EKS / AKS / IKS",
+    detail: "Microservices, autoscaling, self-healing"
+  },
+  {
+    stage: "Observability",
+    title: "CloudWatch + Grafana",
+    detail: "Logs, metrics, alerts, SRE dashboards"
+  }
+];
+
+export const galleryImages = [
+  {
+    src: "/gallery/bike-goa.jpg",
+    alt: "Riding in Goa",
+    title: "Goa Rides",
+    description: "Exploring the coastal roads on two wheels."
+  },
+  {
+    src: "/gallery/go-kart.jpg",
+    alt: "Go-kart track",
+    title: "Track Day",
+    description: "Weekend go-karting session."
+  },
+  {
+    src: "/gallery/sunset.jpg",
+    alt: "Sunset skyline",
+    title: "City Sunset",
+    description: "Stopping to catch the view over the skyline."
+  },
+  {
+    src: "/gallery/rider.jpg",
+    alt: "Rider on motorcycle",
+    title: "Highway Miles",
+    description: "Nothing beats an open road at the end of the day."
+  },
+  {
+    src: "/gallery/team-last-day.jpg",
+    alt: "Cloud Engineering Team",
+    title: "The Cloud Crew",
+    description: "Farewell shot with the engineering team on my last day."
+  },
+  {
+    src: "/gallery/employee-award.jpg",
+    alt: "Receiving Employee of the Month award",
+    title: "Employee of the Month",
+    description:
+      "Receiving the award from my manager, Sufiyan Khan (Principal Cloud Architect)."
+  },
+  {
+    type: "collage",
+    title: "Cloud Byte Cafe",
+    description:
+      "Inaugurating the new company cafe alongside the Director and Head of Technology. Named it 'Cloud Byte' because, well, the Cloud is the future!",
+    images: [
+      { src: "/gallery/cafe-ribbon.jpg", alt: "Cutting ribbon" },
+      { src: "/gallery/cafe-signage.jpg", alt: "Cafe signage" },
+      { src: "/gallery/cafe-mgmt-1.jpg", alt: "Management group 1" },
+      { src: "/gallery/cafe-mgmt-2.jpg", alt: "Management group 2" }
+    ]
+  }
 ];

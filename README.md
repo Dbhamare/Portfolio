@@ -40,4 +40,4 @@ vercel --prod
 Update these files:
 
 - `src/data.js`: personal details, project links, experience bullets, certifications.
-- `public/Darshan CV Latest Updated.pdf`: replace with your latest resume file.
+- `public/Resume.pdf`: replace with your latest resume file.
