@@ -1380,10 +1380,10 @@ p {
   overflow-y: hidden;
   scroll-behavior: auto;
   -webkit-overflow-scrolling: touch;
+  transform: translate3d(0, 0, 0);
   scrollbar-width: thin;
   scrollbar-color: rgba(127, 242, 213, 0.72) transparent;
   contain: layout paint;
-  will-change: scroll-position;
 }
 
 .gallery-strip::-webkit-scrollbar {
@@ -1417,6 +1417,10 @@ p {
   overflow: hidden;
   isolation: isolate;
   contain: paint;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: -webkit-radial-gradient(white, black);
 }
 
 .gallery-card--single {
@@ -1443,17 +1447,15 @@ p {
 
 .gallery-card-content {
   opacity: 0.72;
-  transform: translateZ(0) scale(1.02);
+  transform: scale(1.02);
   transition: transform 0.24s ease, opacity 0.24s ease;
   transform-origin: center center;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
 }
 
 .gallery-card:hover .gallery-card-content,
 .gallery-card:focus-within .gallery-card-content {
   opacity: 1;
-  transform: translateZ(0) scale(1.04);
+  transform: scale(1.04);
 }
 
 .gallery-collage-grid {
@@ -1532,13 +1534,13 @@ p {
 @media (hover: none) {
   .gallery-card-content {
     opacity: 0.72;
-    transform: translateZ(0) scale(1.015);
+    transform: scale(1.015);
   }
 
   .gallery-card:active .gallery-card-content,
   .gallery-card:focus-within .gallery-card-content {
     opacity: 1;
-    transform: translateZ(0) scale(1.035);
+    transform: scale(1.035);
   }
 
   .gallery-card:active .gallery-overlay,
@@ -1703,6 +1705,14 @@ p {
 
   .skill-grid {
     grid-template-columns: 1fr;
+  }
+
+  .skill-column {
+    display: contents;
+  }
+
+  .skill-group[data-skill-group="Leadership & Collaboration"] {
+    order: 999;
   }
 
   .skills-toolbar {

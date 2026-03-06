@@ -1259,7 +1259,11 @@ function App() {
                   const previewIcons = getSkillHeaderPreviewIcons(group.title);
 
                   return (
-                    <article className="skill-group" key={group.title}>
+                    <article
+                      className="skill-group"
+                      data-skill-group={group.title}
+                      key={group.title}
+                    >
                       <button
                         type="button"
                         className={`skill-group-toggle ${isOpen ? "open" : ""}`}
