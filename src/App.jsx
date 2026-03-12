@@ -1,6 +1,7 @@
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import {
   achievements,
+  buildProjectPath,
   certifications,
   education,
   experience,
@@ -1034,6 +1035,29 @@ const GalleryCollageCard = ({ item, onOpenPhoto }) => (
   </figure>
 );
 
+const defaultTheme = "light";
+
+const readPreferredTheme = () => {
+  if (typeof document !== "undefined") {
+    const activeTheme = document.documentElement.getAttribute("data-theme");
+    if (activeTheme === "light" || activeTheme === "dark") return activeTheme;
+  }
+
+  if (typeof window === "undefined") return defaultTheme;
+
+  try {
+    const savedTheme = window.localStorage.getItem("theme");
+    if (savedTheme === "light" || savedTheme === "dark") return savedTheme;
+  } catch {
+    // Fall back to system preference when storage access is blocked.
+  }
+
+  return typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : defaultTheme;
+};
+
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [projectFilter, setProjectFilter] = useState("All");
@@ -1041,13 +1065,7 @@ function App() {
   const skillSearchInputRef = useRef(null);
   const deferredSkillQuery = useDeferredValue(skillQuery);
   const [openSkillGroups, setOpenSkillGroups] = useState(() => new Set());
-  const [theme, setTheme] = useState(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "light" || savedTheme === "dark") return savedTheme;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-  });
+  const [theme, setTheme] = useState(() => readPreferredTheme());
   const [activePhoto, setActivePhoto] = useState(null);
   const [clarityConsent, setClarityConsent] = useState(() =>
     getClarityConsentStatus()
@@ -1103,7 +1121,11 @@ function App() {
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
+    try {
+      localStorage.setItem("theme", theme);
+    } catch {
+      // Ignore storage failures in restricted browsing contexts.
+    }
     setClarityTag("theme", theme);
   }, [theme]);
 
@@ -1309,7 +1331,9 @@ function App() {
             aria-label="Toggle dark and light mode"
             title="Toggle theme"
           >
-            <span aria-hidden="true">{theme === "dark" ? "☀" : "☾"}</span>
+            <span aria-hidden="true" suppressHydrationWarning>
+              {theme === "dark" ? "☀" : "☾"}
+            </span>
           </button>
         </div>
 
@@ -1950,16 +1974,24 @@ function App() {
                     ))}
                   </ul>
                 )}
-                {item.link && (
+                <div className="project-card-actions">
                   <a
-                    href={item.link}
-                    target="_blank"
-                    rel="noreferrer"
+                    href={buildProjectPath(item)}
                     onClick={() => handleProjectClick(item.name)}
                   >
-                    View Project
+                    View Case Study
                   </a>
-                )}
+                  {item.link && (
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={() => handleProjectClick(item.name)}
+                    >
+                      Live Project
+                    </a>
+                  )}
+                </div>
               </article>
             ))}
           </div>

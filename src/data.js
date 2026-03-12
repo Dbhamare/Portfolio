@@ -14,6 +14,32 @@ export const profile = {
   phone: "+447818987884"
 };
 
+export const siteOrigin = "https://darshanbhamarecloud.vercel.app";
+
+const normalizePath = (path = "/") => {
+  if (!path) return "/";
+  if (/^https?:\/\//i.test(path)) return path;
+  return path.startsWith("/") ? path : `/${path}`;
+};
+
+export const buildAbsoluteUrl = (path = "/") => {
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${siteOrigin}${normalizePath(path)}`;
+};
+
+export const buildProjectSlug = (value = "") =>
+  value
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+export const buildProjectPath = (projectOrSlug) => {
+  const slug =
+    typeof projectOrSlug === "string" ? projectOrSlug : projectOrSlug?.slug;
+  return `/projects/${slug}/`;
+};
+
 export const orbitIcons = [
   {
     name: "AWS",
@@ -298,7 +324,7 @@ export const experience = [
   }
 ];
 
-export const projects = [
+const projectRecords = [
   {
     name: "Multi-Cloud Microservices CI/CD Pipeline",
     category: "Cloud & DevOps",
@@ -373,6 +399,11 @@ export const projects = [
     stack: ["MongoDB", "Express.js", "React", "Node.js", "JWT", "AI"]
   }
 ];
+
+export const projects = projectRecords.map((project) => ({
+  ...project,
+  slug: project.slug || buildProjectSlug(project.name)
+}));
 
 export const certifications = [
   "Programming in C and C++",

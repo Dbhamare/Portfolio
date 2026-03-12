@@ -1,8 +1,28 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (() => {
+        const defaultTheme = "light";
+        try {
+          const storedTheme = localStorage.getItem("theme");
+          const prefersDark =
+            typeof window.matchMedia === "function" &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches;
+          const theme =
+            storedTheme === "light" || storedTheme === "dark"
+              ? storedTheme
+              : prefersDark
+                ? "dark"
+                : defaultTheme;
+          document.documentElement.setAttribute("data-theme", theme);
+        } catch {
+          document.documentElement.setAttribute("data-theme", defaultTheme);
+        }
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -112,7 +132,7 @@
             "item": {
               "@type": "CreativeWork",
               "name": "Multi-Cloud Microservices CI/CD Pipeline",
-              "url": "https://darshanbhamarecloud.vercel.app/#projects"
+              "url": "https://darshanbhamarecloud.vercel.app/projects/multi-cloud-microservices-ci-cd-pipeline/"
             }
           },
           {
@@ -121,7 +141,7 @@
             "item": {
               "@type": "CreativeWork",
               "name": "Infrastructure as Code (IaC) Automation & Self-Healing Network",
-              "url": "https://darshanbhamarecloud.vercel.app/#projects"
+              "url": "https://darshanbhamarecloud.vercel.app/projects/infrastructure-as-code-iac-automation-and-self-healing-network/"
             }
           },
           {
@@ -130,7 +150,7 @@
             "item": {
               "@type": "CreativeWork",
               "name": "Centralized Observability and Incident Reduction Platform",
-              "url": "https://darshanbhamarecloud.vercel.app/#projects"
+              "url": "https://darshanbhamarecloud.vercel.app/projects/centralized-observability-and-incident-reduction-platform/"
             }
           },
           {
@@ -139,7 +159,7 @@
             "item": {
               "@type": "CreativeWork",
               "name": "Debate Sessions in Higher Education",
-              "url": "https://darshanbhamarecloud.vercel.app/#projects"
+              "url": "https://darshanbhamarecloud.vercel.app/projects/debate-sessions-in-higher-education/"
             }
           }
         ]
