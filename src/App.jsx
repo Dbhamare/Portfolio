@@ -11,6 +11,14 @@ import {
   projects,
   skillGroups
 } from "./data";
+import {
+  getClarityConsentStatus,
+  identifyVisitor,
+  setClarityConsentStatus,
+  setClarityTag,
+  trackClarityEvent,
+  upgradeClaritySession
+} from "./clarity";
 
 const navItems = [
   { id: "about", label: "About" },
@@ -22,6 +30,12 @@ const navItems = [
   { id: "gallery", label: "Gallery" },
   { id: "contact", label: "Contact" }
 ];
+
+const toClarityToken = (value = "") =>
+  String(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
 
 const emphasisRegex =
   /(AWS|Azure|Kubernetes|Terraform|Ansible|Jenkins|GitHub(?: Actions)?|CloudWatch|EKS|AKS|MSK|MongoDB|ElasticSearch|Docker|Helm|IBM IKS|CI\/CD|IAM|WAF|NACLs?|Security Groups?|Load Balancing|Auto Scaling|Linux|Windows|Nagios|Prometheus|Grafana|Datadog|Loki|\d+%|2 weeks|3 days)/gi;
@@ -975,6 +989,9 @@ function App() {
       : "light";
   });
   const [activePhoto, setActivePhoto] = useState(null);
+  const [clarityConsent, setClarityConsent] = useState(() =>
+    getClarityConsentStatus()
+  );
 
   const categories = useMemo(
     () => ["All", ...new Set(projects.map((item) => item.category))],
@@ -1026,20 +1043,77 @@ function App() {
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
+    setClarityTag("theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    identifyVisitor("portfolio-visitor");
+  }, []);
+
+  useEffect(() => {
+    setClarityTag("project_filter", projectFilter);
+  }, [projectFilter]);
 
   useEffect(() => {
     if (!activePhoto) return undefined;
     const onKeyDown = (event) => {
-      if (event.key === "Escape") setActivePhoto(null);
+      if (event.key !== "Escape") return;
+      setActivePhoto(null);
+      trackClarityEvent("gallery_photo_closed_escape");
+      setClarityTag("gallery_modal", "closed");
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [activePhoto]);
 
-  const closeMobile = () => setMobileOpen(false);
-  const goToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+  const closeMobile = () => {
+    setMobileOpen(false);
+  };
+
+  const handleNavClick = (targetId) => {
+    trackClarityEvent(`nav_${toClarityToken(targetId)}_click`);
+    setClarityTag("last_nav_target", targetId);
+    identifyVisitor("portfolio-visitor", `${window.location.pathname}#${targetId}`);
+    closeMobile();
+  };
+
+  const goToTop = () => {
+    trackClarityEvent("nav_top_click");
+    setClarityTag("last_nav_target", "top");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    trackClarityEvent(`theme_${toClarityToken(nextTheme)}_selected`);
+    setClarityTag("theme", nextTheme);
+  };
+
+  const toggleMobileMenu = () => {
+    const nextOpenState = !mobileOpen;
+    setMobileOpen(nextOpenState);
+    trackClarityEvent(nextOpenState ? "mobile_menu_opened" : "mobile_menu_closed");
+  };
+
+  const handleHeroLinkClick = (linkName) => {
+    trackClarityEvent(`hero_${toClarityToken(linkName)}_click`);
+    setClarityTag("last_outbound_link", linkName);
+    if (linkName === "resume") upgradeClaritySession("resume_interest");
+  };
+
+  const handleContactLinkClick = (linkName) => {
+    trackClarityEvent(`contact_${toClarityToken(linkName)}_click`);
+    setClarityTag("last_contact_channel", linkName);
+    upgradeClaritySession("contact_intent");
+  };
+
   const openPhotoPreview = (photoOrSrc, alt, width, height) => {
+    const selectedLabel =
+      typeof photoOrSrc === "object" && photoOrSrc !== null
+        ? photoOrSrc.title || photoOrSrc.alt || "gallery_photo"
+        : alt || "photo_preview";
+
     if (typeof photoOrSrc === "object" && photoOrSrc !== null) {
       setActivePhoto({
         src: photoOrSrc.src,
@@ -1047,29 +1121,82 @@ function App() {
         width: photoOrSrc.width || defaultGalleryImageWidth,
         height: photoOrSrc.height || defaultGalleryImageHeight
       });
-      return;
+    } else {
+      setActivePhoto({
+        src: photoOrSrc,
+        alt: alt || "Photo preview",
+        width: width || defaultGalleryImageWidth,
+        height: height || defaultGalleryImageHeight
+      });
     }
 
-    setActivePhoto({
-      src: photoOrSrc,
-      alt: alt || "Photo preview",
-      width: width || defaultGalleryImageWidth,
-      height: height || defaultGalleryImageHeight
-    });
+    trackClarityEvent("gallery_photo_opened");
+    setClarityTag("last_gallery_photo", selectedLabel);
+    setClarityTag("gallery_modal", "open");
+    upgradeClaritySession("gallery_engagement");
   };
 
-  const toggleSkillGroup = (title) =>
+  const closePhotoPreview = (source) => {
+    setActivePhoto(null);
+    trackClarityEvent(`gallery_photo_closed_${toClarityToken(source)}`);
+    setClarityTag("gallery_modal", "closed");
+  };
+
+  const handleSkillSearchChange = (event) => {
+    const nextQuery = event.target.value;
+    const nextHasValue = nextQuery.trim() !== "";
+    const previousHasValue = skillQuery.trim() !== "";
+
+    if (!previousHasValue && nextHasValue) {
+      trackClarityEvent("skills_search_started");
+      upgradeClaritySession("skills_search_interest");
+    }
+
+    setSkillQuery(nextQuery);
+    setClarityTag("skills_search_active", nextHasValue ? "yes" : "no");
+  };
+
+  const toggleSkillGroup = (title) => {
+    trackClarityEvent("skill_group_toggled");
+    setClarityTag("last_skill_group", title);
     setOpenSkillGroups((prev) => {
       const next = new Set(prev);
       if (next.has(title)) next.delete(title);
       else next.add(title);
       return next;
     });
+  };
 
-  const expandAllSkillGroups = () =>
+  const expandAllSkillGroups = () => {
     setOpenSkillGroups(new Set(filteredSkillGroups.map((group) => group.title)));
+    trackClarityEvent("skill_groups_expanded_all");
+    setClarityTag("skill_groups_state", "expanded");
+  };
 
-  const collapseAllSkillGroups = () => setOpenSkillGroups(new Set());
+  const collapseAllSkillGroups = () => {
+    setOpenSkillGroups(new Set());
+    trackClarityEvent("skill_groups_collapsed_all");
+    setClarityTag("skill_groups_state", "collapsed");
+  };
+
+  const handleProjectFilterChange = (category) => {
+    setProjectFilter(category);
+    trackClarityEvent(`project_filter_${toClarityToken(category)}`);
+    setClarityTag("project_filter", category);
+    if (category !== "All") upgradeClaritySession("project_filter_interest");
+  };
+
+  const handleProjectClick = (projectName) => {
+    trackClarityEvent("project_link_clicked");
+    setClarityTag("last_project_clicked", projectName);
+    upgradeClaritySession("project_view_interest");
+  };
+
+  const handleConsentChoice = (status) => {
+    setClarityConsentStatus(status);
+    setClarityConsent(status);
+    trackClarityEvent(`cookie_consent_${toClarityToken(status)}_selected`);
+  };
 
   const renderHighlightedPoint = (text) => {
     const parts = text.split(emphasisRegex);
@@ -1094,7 +1221,7 @@ function App() {
               key={item.id}
               className="nav-link"
               href={`#${item.id}`}
-              onClick={closeMobile}
+              onClick={() => handleNavClick(item.id)}
             >
               {item.label}
             </a>
@@ -1105,9 +1232,7 @@ function App() {
           <button
             className="theme-toggle"
             type="button"
-            onClick={() =>
-              setTheme((prev) => (prev === "dark" ? "light" : "dark"))
-            }
+            onClick={toggleTheme}
             aria-label="Toggle dark and light mode"
             title="Toggle theme"
           >
@@ -1118,7 +1243,7 @@ function App() {
         <button
           className="menu-toggle"
           type="button"
-          onClick={() => setMobileOpen((prev) => !prev)}
+          onClick={toggleMobileMenu}
           aria-label="Toggle navigation"
         >
           <span />
@@ -1141,13 +1266,28 @@ function App() {
               <p className="meta strong">{profile.visaStatus}</p>
 
               <div className="hero-actions">
-                <a href={profile.linkedin} target="_blank" rel="noreferrer">
+                <a
+                  href={profile.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => handleHeroLinkClick("linkedin")}
+                >
                   LinkedIn
                 </a>
-                <a href={profile.github} target="_blank" rel="noreferrer">
+                <a
+                  href={profile.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => handleHeroLinkClick("github")}
+                >
                   GitHub
                 </a>
-                <a href={profile.resumeLabel} target="_blank" rel="noreferrer">
+                <a
+                  href={profile.resumeLabel}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => handleHeroLinkClick("resume")}
+                >
                   Resume
                 </a>
               </div>
@@ -1236,7 +1376,7 @@ function App() {
               type="text"
               className="skill-search"
               value={skillQuery}
-              onChange={(e) => setSkillQuery(e.target.value)}
+              onChange={handleSkillSearchChange}
               placeholder="Search skills..."
               aria-label="Search tools and technologies"
             />
@@ -1676,7 +1816,7 @@ function App() {
                 <button
                   key={category}
                   type="button"
-                  onClick={() => setProjectFilter(category)}
+                  onClick={() => handleProjectFilterChange(category)}
                   className={projectFilter === category ? "active" : ""}
                 >
                   {category}
@@ -1712,7 +1852,12 @@ function App() {
                     );
                   })}
                 </div>
-                <a href={item.link} target="_blank" rel="noreferrer">
+                <a
+                  href={item.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => handleProjectClick(item.name)}
+                >
                   View Project
                 </a>
               </article>
@@ -1782,17 +1927,51 @@ function App() {
             collaborations.
           </p>
           <div className="hero-actions">
-            <a href={`mailto:${profile.email}`}>Email</a>
-            <a href={`tel:${profile.phone}`}>Call</a>
-            <a href={profile.linkedin} target="_blank" rel="noreferrer">
+            <a
+              href={`mailto:${profile.email}`}
+              onClick={() => handleContactLinkClick("email")}
+            >
+              Email
+            </a>
+            <a href={`tel:${profile.phone}`} onClick={() => handleContactLinkClick("call")}>
+              Call
+            </a>
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => handleContactLinkClick("linkedin")}
+            >
               LinkedIn
             </a>
-            <a href={profile.github} target="_blank" rel="noreferrer">
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => handleContactLinkClick("github")}
+            >
               GitHub
             </a>
           </div>
         </section>
       </main>
+
+      {!clarityConsent && (
+        <aside className="cookie-consent" role="dialog" aria-live="polite">
+          <p>
+            We use Clarity analytics cookies to improve the portfolio experience. You can
+            accept or decline analytics tracking.
+          </p>
+          <div className="cookie-consent-actions">
+            <button type="button" onClick={() => handleConsentChoice("granted")}>
+              Accept
+            </button>
+            <button type="button" onClick={() => handleConsentChoice("denied")}>
+              Decline
+            </button>
+          </div>
+        </aside>
+      )}
 
       {activePhoto && (
         <div
@@ -1800,13 +1979,16 @@ function App() {
           role="dialog"
           aria-modal="true"
           aria-label="Photo preview"
-          onClick={() => setActivePhoto(null)}
+          onClick={() => closePhotoPreview("overlay")}
         >
           <button
             type="button"
             className="photo-close"
             aria-label="Close photo preview"
-            onClick={() => setActivePhoto(null)}
+            onClick={(event) => {
+              event.stopPropagation();
+              closePhotoPreview("button");
+            }}
           >
             ×
           </button>
