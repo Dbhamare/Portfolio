@@ -1,0 +1,29 @@
+# Darshan Bhamare
+
+> Cloud Operations, DevOps, SRE, and Platform Engineer. Portfolio includes multi-cloud delivery, infrastructure automation, and reliability engineering projects.
+
+## About
+
+- Name: Darshan Bhamare
+- Role: Senior Cloud Engineer / Cloud Operations / DevOps / SRE
+- Location: United Kingdom | India | Remote | Relocation
+- Availability: Open to full-time and contract opportunities
+
+## Core Skills
+
+- AWS, Azure, Kubernetes (EKS/AKS/IKS)
+- Terraform, Ansible, Helm, Jenkins
+- CloudWatch, incident response, reliability engineering
+- Linux/Windows operations, infrastructure security
+
+## Featured Projects
+
+- Multi-Cloud Microservices CI/CD Pipeline
+- Infrastructure as Code (IaC) Automation & Self-Healing Network
+- Centralized Observability and Incident Reduction Platform
+
+## Contact
+
+- Email: darsh.bhamare.uk@gmail.com
+- LinkedIn: https://linkedin.com/in/darshan-bhamare-cloud
+- Portfolio: https://darshanbhamarecloud.vercel.app/

@@ -3,6 +3,7 @@ const CONSENT_STORAGE_KEY = "clarity-consent-v2";
 const VISITOR_ID_STORAGE_KEY = "clarity-custom-id";
 const SESSION_ID_STORAGE_KEY = "clarity-custom-session-id";
 const CLARITY_IDLE_TIMEOUT_MS = 2000;
+const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
 
 const consentProfiles = {
   granted: { ad_Storage: "granted", analytics_Storage: "granted" },
@@ -10,6 +11,12 @@ const consentProfiles = {
 };
 
 const isBrowser = () => typeof window !== "undefined";
+const isClarityRuntimeEnabled = () => {
+  if (!isBrowser()) return false;
+  if (import.meta.env.VITE_ENABLE_CLARITY === "true") return true;
+  if (!import.meta.env.PROD) return false;
+  return !LOCAL_HOSTS.has(window.location.hostname);
+};
 
 let clarityApi = null;
 let clarityApiPromise = null;
@@ -75,7 +82,7 @@ const scheduleInIdle = (callback) => {
 };
 
 function requestFlush() {
-  if (!isBrowser() || flushScheduled) return;
+  if (!isClarityRuntimeEnabled() || flushScheduled) return;
   flushScheduled = true;
 
   const runFlush = () => scheduleInIdle(() => void flushPendingOperations());
@@ -101,7 +108,7 @@ const loadClarityApi = async () => {
 };
 
 const ensureClarityInitialized = async () => {
-  if (!isBrowser()) return null;
+  if (!isClarityRuntimeEnabled()) return null;
   const loadedApi = await loadClarityApi();
   if (!loadedApi) return null;
 
@@ -116,7 +123,7 @@ const ensureClarityInitialized = async () => {
 };
 
 const flushPendingOperations = async () => {
-  if (!isBrowser() || flushing) return;
+  if (!isClarityRuntimeEnabled() || flushing) return;
   flushing = true;
   flushScheduled = false;
 
@@ -140,7 +147,7 @@ const flushPendingOperations = async () => {
 };
 
 const enqueueOperation = (operation) => {
-  if (!isBrowser()) return;
+  if (!isClarityRuntimeEnabled()) return;
   pendingOperations.push(operation);
   requestFlush();
 };
@@ -154,7 +161,7 @@ const toPageId = () => {
 export const getClarityConsentStatus = () => readStoredConsent();
 
 export const initializeClarity = () => {
-  if (!isBrowser()) return;
+  if (!isClarityRuntimeEnabled()) return;
   if (initRequested) return;
   initRequested = true;
 

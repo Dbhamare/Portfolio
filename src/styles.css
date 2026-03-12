@@ -181,7 +181,7 @@ a {
   border-radius: 999px;
   padding: 0.58rem 0.72rem;
   background: var(--surface-strong);
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
   animation: softFadeUp 0.3s ease both;
 }
 
@@ -430,6 +430,12 @@ h1 {
   border: 4px solid rgba(255, 255, 255, 0.9);
 }
 
+.avatar-frame picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .avatar {
   position: relative;
   z-index: 1;
@@ -551,8 +557,6 @@ h1 {
 .block {
   padding: 2.2rem 0;
   scroll-margin-top: 6rem;
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 680px;
 }
 
 .block + .block {
@@ -585,11 +589,15 @@ p {
   margin: 0 0 0.8rem;
 }
 
+.skill-search-wrap {
+  position: relative;
+}
+
 .skill-search {
   width: 100%;
   border: 1px solid var(--line);
   border-radius: 10px;
-  padding: 0.52rem 0.72rem;
+  padding: 0.52rem 2.1rem 0.52rem 0.72rem;
   font-size: 0.84rem;
   color: var(--text);
   background: var(--chip-bg);
@@ -598,6 +606,31 @@ p {
 
 .skill-search:focus {
   border-color: var(--accent);
+}
+
+.skill-search-clear {
+  position: absolute;
+  top: 50%;
+  right: 0.45rem;
+  transform: translateY(-50%);
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-size: 0.74rem;
+  line-height: 1;
+  color: var(--muted);
+  background: var(--card);
+}
+
+.skill-search-clear:hover,
+.skill-search-clear:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent-soft);
 }
 
 .skills-actions {
@@ -783,6 +816,7 @@ p {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: 700;
 }
 
 .timeline {
@@ -1352,6 +1386,17 @@ p {
   margin-bottom: 0.3rem;
 }
 
+.project-highlights {
+  margin: 0.78rem 0 0;
+  padding-left: 1.05rem;
+  color: var(--timeline-text);
+  line-height: 1.56;
+}
+
+.project-highlights li + li {
+  margin-top: 0.28rem;
+}
+
 .project-card a {
   display: inline-block;
   margin-top: 0.75rem;
@@ -1427,6 +1472,11 @@ p {
   width: auto;
 }
 
+.gallery-card--single picture {
+  display: block;
+  height: 100%;
+}
+
 .gallery-card--single .gallery-card-content {
   display: block;
   width: auto;
@@ -1474,6 +1524,12 @@ p {
   display: block;
   background: transparent;
   cursor: zoom-in;
+}
+
+.gallery-collage-cell picture {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .gallery-collage-grid img {
@@ -1636,6 +1692,10 @@ p {
   transform: translateZ(0);
   will-change: transform, opacity;
   backface-visibility: hidden;
+}
+
+.photo-modal picture {
+  display: block;
 }
 
 .photo-close {

@@ -1,4 +1,4 @@
-import { useDeferredValue, useEffect, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import {
   achievements,
   certifications,
@@ -19,6 +19,7 @@ import {
   trackClarityEvent,
   upgradeClaritySession
 } from "./clarity";
+import { syncGoogleAnalyticsConsent } from "./analyticsConsent";
 
 const navItems = [
   { id: "about", label: "About" },
@@ -61,217 +62,217 @@ const techIconLibrary = [
       "cloudformation",
       "aws msk"
     ],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg",
+    src: "/icons/devicon/amazonwebservices/amazonwebservices-original-wordmark.svg",
     alt: "AWS"
   },
   {
     id: "azure",
     keys: ["azure", "aks", "azure monitor", "functions", "app services"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg",
+    src: "/icons/devicon/azure/azure-original.svg",
     alt: "Azure"
   },
   {
     id: "kubernetes",
     keys: ["kubernetes", "eks", "aks", "iks"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg",
+    src: "/icons/devicon/kubernetes/kubernetes-plain.svg",
     alt: "Kubernetes"
   },
   {
     id: "terraform",
     keys: ["terraform"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg",
+    src: "/icons/devicon/terraform/terraform-original.svg",
     alt: "Terraform"
   },
   {
     id: "docker",
     keys: ["docker"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
+    src: "/icons/devicon/docker/docker-original.svg",
     alt: "Docker"
   },
   {
     id: "jenkins",
     keys: ["jenkins", "ci/cd", "ci/cd pipelines"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jenkins/jenkins-original.svg",
+    src: "/icons/devicon/jenkins/jenkins-original.svg",
     alt: "Jenkins"
   },
   {
     id: "linux",
     keys: ["linux"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg",
+    src: "/icons/devicon/linux/linux-original.svg",
     alt: "Linux"
   },
   {
     id: "windows",
     keys: ["windows", "active directory", "group policy"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg",
+    src: "/icons/devicon/windows8/windows8-original.svg",
     alt: "Windows"
   },
   {
     id: "ansible",
     keys: ["ansible"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ansible/ansible-original.svg",
+    src: "/icons/devicon/ansible/ansible-original.svg",
     alt: "Ansible"
   },
   {
     id: "helm",
     keys: ["helm"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/helm/helm-original.svg",
+    src: "/icons/devicon/helm/helm-original.svg",
     alt: "Helm"
   },
   {
     id: "prometheus",
     keys: ["prometheus"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prometheus/prometheus-original.svg",
+    src: "/icons/devicon/prometheus/prometheus-original.svg",
     alt: "Prometheus"
   },
   {
     id: "grafana",
     keys: ["grafana"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/grafana/grafana-original.svg",
+    src: "/icons/devicon/grafana/grafana-original.svg",
     alt: "Grafana"
   },
   {
     id: "mongodb",
     keys: ["mongodb"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
+    src: "/icons/devicon/mongodb/mongodb-original.svg",
     alt: "MongoDB"
   },
   {
     id: "postgresql",
     keys: ["postgresql", "sql"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
+    src: "/icons/devicon/postgresql/postgresql-original.svg",
     alt: "PostgreSQL"
   },
   {
     id: "elasticsearch",
     keys: ["elasticsearch", "elk", "logstash", "kibana"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/elasticsearch/elasticsearch-original.svg",
+    src: "/icons/devicon/elasticsearch/elasticsearch-original.svg",
     alt: "ElasticSearch"
   },
   {
     id: "python",
     keys: ["python"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+    src: "/icons/devicon/python/python-original.svg",
     alt: "Python"
   },
   {
     id: "java",
     keys: ["java", "junit", "core and advanced java"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
+    src: "/icons/devicon/java/java-original.svg",
     alt: "Java"
   },
   {
     id: "cplusplus",
     keys: ["c/c++", "c++"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg",
+    src: "/icons/devicon/cplusplus/cplusplus-original.svg",
     alt: "C++"
   },
   {
     id: "c",
     keys: ["programming in c", " c "],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg",
+    src: "/icons/devicon/c/c-original.svg",
     alt: "C"
   },
   {
     id: "react",
     keys: ["react"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+    src: "/icons/devicon/react/react-original.svg",
     alt: "React"
   },
   {
     id: "nodejs",
     keys: ["node.js", "nodejs", "express"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+    src: "/icons/devicon/nodejs/nodejs-original.svg",
     alt: "Node.js"
   },
   {
     id: "git",
     keys: ["git"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
+    src: "/icons/devicon/git/git-original.svg",
     alt: "Git"
   },
   {
     id: "github",
     keys: ["github", "github actions"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg",
+    src: "/icons/devicon/github/github-original.svg",
     alt: "GitHub"
   },
   {
     id: "javascript",
     keys: ["javascript"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+    src: "/icons/devicon/javascript/javascript-original.svg",
     alt: "JavaScript"
   },
   {
     id: "html5",
     keys: ["html"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
+    src: "/icons/devicon/html5/html5-original.svg",
     alt: "HTML"
   },
   {
     id: "css3",
     keys: ["css"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
+    src: "/icons/devicon/css3/css3-original.svg",
     alt: "CSS"
   },
   {
     id: "flask",
     keys: ["flask"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg",
+    src: "/icons/devicon/flask/flask-original.svg",
     alt: "Flask"
   },
   {
     id: "bash",
     keys: ["shell scripting", "bash"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg",
+    src: "/icons/devicon/bash/bash-original.svg",
     alt: "Shell"
   },
   {
     id: "yaml",
     keys: ["yaml"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/yaml/yaml-original.svg",
+    src: "/icons/devicon/yaml/yaml-original.svg",
     alt: "YAML"
   },
   {
     id: "vscode",
     keys: ["vs code"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg",
+    src: "/icons/devicon/vscode/vscode-original.svg",
     alt: "VS Code"
   },
   {
     id: "jetbrains",
     keys: ["pycharm", "intellij"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jetbrains/jetbrains-original.svg",
+    src: "/icons/devicon/jetbrains/jetbrains-original.svg",
     alt: "JetBrains"
   },
   {
     id: "eclipse",
     keys: ["eclipse"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/eclipse/eclipse-original.svg",
+    src: "/icons/devicon/eclipse/eclipse-original.svg",
     alt: "Eclipse"
   },
   {
     id: "wordpress",
     keys: ["wordpress"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/wordpress/wordpress-plain.svg",
+    src: "/icons/devicon/wordpress/wordpress-plain.svg",
     alt: "WordPress"
   },
   {
     id: "gcp",
     keys: ["google cloud platform", "gcp"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg",
+    src: "/icons/devicon/googlecloud/googlecloud-original.svg",
     alt: "Google Cloud"
   },
   {
     id: "jira",
     keys: ["jira"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jira/jira-original.svg",
+    src: "/icons/devicon/jira/jira-original.svg",
     alt: "Jira"
   },
   {
     id: "confluence",
     keys: ["confluence"],
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/confluence/confluence-original.svg",
+    src: "/icons/devicon/confluence/confluence-original.svg",
     alt: "Confluence"
   },
   {
@@ -388,12 +389,12 @@ const skillHeaderPreviewIcons = {
   "Cloud Platforms": [
     {
       name: "AWS",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg",
+      src: "/icons/devicon/amazonwebservices/amazonwebservices-original-wordmark.svg",
       alt: "AWS"
     },
     {
       name: "Azure",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg",
+      src: "/icons/devicon/azure/azure-original.svg",
       alt: "Azure"
     },
     {
@@ -405,51 +406,51 @@ const skillHeaderPreviewIcons = {
   "Containers & Orchestration": [
     {
       name: "Docker",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
+      src: "/icons/devicon/docker/docker-original.svg",
       alt: "Docker"
     },
     {
       name: "Kubernetes",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg",
+      src: "/icons/devicon/kubernetes/kubernetes-plain.svg",
       alt: "Kubernetes"
     },
     {
       name: "Helm",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/helm/helm-original.svg",
+      src: "/icons/devicon/helm/helm-original.svg",
       alt: "Helm"
     }
   ],
   "CI/CD & Automation": [
     {
       name: "Jenkins",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jenkins/jenkins-original.svg",
+      src: "/icons/devicon/jenkins/jenkins-original.svg",
       alt: "Jenkins"
     },
     {
       name: "GitHub Actions",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg",
+      src: "/icons/devicon/github/github-original.svg",
       alt: "GitHub Actions"
     },
     {
       name: "Terraform",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg",
+      src: "/icons/devicon/terraform/terraform-original.svg",
       alt: "Terraform"
     },
     {
       name: "Ansible",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ansible/ansible-original.svg",
+      src: "/icons/devicon/ansible/ansible-original.svg",
       alt: "Ansible"
     }
   ],
   "Monitoring & Reliability": [
     {
       name: "Grafana",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/grafana/grafana-original.svg",
+      src: "/icons/devicon/grafana/grafana-original.svg",
       alt: "Grafana"
     },
     {
       name: "Prometheus",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prometheus/prometheus-original.svg",
+      src: "/icons/devicon/prometheus/prometheus-original.svg",
       alt: "Prometheus"
     },
     {
@@ -466,7 +467,7 @@ const skillHeaderPreviewIcons = {
     },
     {
       name: "AWS",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg",
+      src: "/icons/devicon/amazonwebservices/amazonwebservices-original-wordmark.svg",
       alt: "AWS"
     },
     {
@@ -478,107 +479,107 @@ const skillHeaderPreviewIcons = {
   "Platforms & Databases": [
     {
       name: "Linux",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg",
+      src: "/icons/devicon/linux/linux-original.svg",
       alt: "Linux"
     },
     {
       name: "Windows",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg",
+      src: "/icons/devicon/windows8/windows8-original.svg",
       alt: "Windows"
     },
     {
       name: "MongoDB",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
+      src: "/icons/devicon/mongodb/mongodb-original.svg",
       alt: "MongoDB"
     },
     {
       name: "PostgreSQL",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
+      src: "/icons/devicon/postgresql/postgresql-original.svg",
       alt: "PostgreSQL"
     }
   ],
   "Scripting & IaC": [
     {
       name: "Python",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+      src: "/icons/devicon/python/python-original.svg",
       alt: "Python"
     },
     {
       name: "Shell",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg",
+      src: "/icons/devicon/bash/bash-original.svg",
       alt: "Shell"
     },
     {
       name: "YAML",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/yaml/yaml-original.svg",
+      src: "/icons/devicon/yaml/yaml-original.svg",
       alt: "YAML"
     }
   ],
   "Collaboration & Tools": [
     {
       name: "Jira",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jira/jira-original.svg",
+      src: "/icons/devicon/jira/jira-original.svg",
       alt: "Jira"
     },
     {
       name: "Confluence",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/confluence/confluence-original.svg",
+      src: "/icons/devicon/confluence/confluence-original.svg",
       alt: "Confluence"
     },
     {
       name: "Git",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
+      src: "/icons/devicon/git/git-original.svg",
       alt: "Git"
     }
   ],
   "Developer Tools": [
     {
       name: "Git",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg",
+      src: "/icons/devicon/git/git-original.svg",
       alt: "Git"
     },
     {
       name: "Docker",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg",
+      src: "/icons/devicon/docker/docker-original.svg",
       alt: "Docker"
     },
     {
       name: "VS Code",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg",
+      src: "/icons/devicon/vscode/vscode-original.svg",
       alt: "VS Code"
     },
     {
       name: "IntelliJ",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jetbrains/jetbrains-original.svg",
+      src: "/icons/devicon/jetbrains/jetbrains-original.svg",
       alt: "IntelliJ"
     }
   ],
   "Languages & Frameworks": [
     {
       name: "Java",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
+      src: "/icons/devicon/java/java-original.svg",
       alt: "Java"
     },
     {
       name: "Python",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+      src: "/icons/devicon/python/python-original.svg",
       alt: "Python"
     },
     {
       name: "React",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+      src: "/icons/devicon/react/react-original.svg",
       alt: "React"
     },
     {
       name: "Node.js",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+      src: "/icons/devicon/nodejs/nodejs-original.svg",
       alt: "Node.js"
     }
   ],
   "Leadership & Collaboration": [
     {
       name: "Jira",
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jira/jira-original.svg",
+      src: "/icons/devicon/jira/jira-original.svg",
       alt: "Jira"
     },
     {
@@ -612,15 +613,15 @@ const exactSkillIconMap = {
   "group policy": { src: inlineFallbackIcons.checklist, alt: "Group Policy" },
   "active directory": { src: inlineFallbackIcons.network, alt: "Active Directory" },
   "windows server": {
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg",
+    src: "/icons/devicon/windows8/windows8-original.svg",
     alt: "Windows Server"
   },
   "aws waf": {
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg",
+    src: "/icons/devicon/amazonwebservices/amazonwebservices-original-wordmark.svg",
     alt: "AWS WAF"
   },
   "elk stack": {
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/elasticsearch/elasticsearch-original.svg",
+    src: "/icons/devicon/elasticsearch/elasticsearch-original.svg",
     alt: "ELK Stack"
   }
 };
@@ -638,7 +639,7 @@ const fallbackIconForLabel = (label = "") => {
 
   if (/(group policy|active directory|windows server)/.test(value)) {
     return {
-      src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg",
+      src: "/icons/devicon/windows8/windows8-original.svg",
       alt: "Windows"
     };
   }
@@ -745,19 +746,19 @@ const architectureServiceIconMap = {
     alt: "EKS Self-Managed Nodes"
   },
   "Auth Service": {
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg",
+    src: "/icons/devicon/kubernetes/kubernetes-plain.svg",
     alt: "Auth Service"
   },
   "Catalog Service": {
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg",
+    src: "/icons/devicon/kubernetes/kubernetes-plain.svg",
     alt: "Catalog Service"
   },
   "Cart Service": {
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg",
+    src: "/icons/devicon/kubernetes/kubernetes-plain.svg",
     alt: "Cart Service"
   },
   "Payment Service": {
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg",
+    src: "/icons/devicon/kubernetes/kubernetes-plain.svg",
     alt: "Payment Service"
   },
   "RDS Primary": {
@@ -781,11 +782,11 @@ const architectureServiceIconMap = {
     alt: "IAM Roles"
   },
   GitHub: {
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg",
+    src: "/icons/devicon/github/github-original.svg",
     alt: "GitHub"
   },
   Jenkins: {
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jenkins/jenkins-original.svg",
+    src: "/icons/devicon/jenkins/jenkins-original.svg",
     alt: "Jenkins"
   },
   "Amazon ECR": {
@@ -793,15 +794,15 @@ const architectureServiceIconMap = {
     alt: "Amazon ECR"
   },
   Terraform: {
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg",
+    src: "/icons/devicon/terraform/terraform-original.svg",
     alt: "Terraform"
   },
   Helm: {
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/helm/helm-original.svg",
+    src: "/icons/devicon/helm/helm-original.svg",
     alt: "Helm"
   },
   "Helm + Terraform": {
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg",
+    src: "/icons/devicon/terraform/terraform-original.svg",
     alt: "Helm and Terraform"
   },
   "Amazon EKS": {
@@ -809,11 +810,11 @@ const architectureServiceIconMap = {
     alt: "Amazon EKS"
   },
   "Prometheus & Grafana": {
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/grafana/grafana-original.svg",
+    src: "/icons/devicon/grafana/grafana-original.svg",
     alt: "Prometheus and Grafana"
   },
   "ELK Stack": {
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/elasticsearch/elasticsearch-original.svg",
+    src: "/icons/devicon/elasticsearch/elasticsearch-original.svg",
     alt: "ELK Stack"
   },
   "AWS CloudWatch": {
@@ -904,8 +905,8 @@ const getArchitectureIcon = (label = "") =>
 const galleryPlaceholderSrc = "/gallery/placeholder-photo.svg";
 const defaultGalleryImageWidth = 1600;
 const defaultGalleryImageHeight = 1200;
-const profileImageWidth = 2550;
-const profileImageHeight = 3864;
+const profileImageWidth = 900;
+const profileImageHeight = 1364;
 const inlineTechIconSize = 16;
 const skillPreviewIconSize = 20;
 const orbitIconSize = 36;
@@ -928,49 +929,76 @@ const openPhotoOnKeyboard = (event, onOpenPhoto, photo) => {
   onOpenPhoto(photo);
 };
 
-const GalleryImageCard = ({ image, onOpenPhoto }) => (
-  <figure className="gallery-card gallery-card--single">
-    <img
-      className="gallery-card-content"
-      src={image.src}
-      alt={image.alt}
-      width={image.width || defaultGalleryImageWidth}
-      height={image.height || defaultGalleryImageHeight}
-      loading="lazy"
-      decoding="async"
-      onError={handleGalleryImageError}
-      role="button"
-      tabIndex={0}
-      aria-label={`Open ${image.title}`}
-      onClick={() => onOpenPhoto(image)}
-      onKeyDown={(event) => openPhotoOnKeyboard(event, onOpenPhoto, image)}
-    />
-    <GalleryOverlay title={image.title} description={image.description} />
-  </figure>
-);
+const getOptimizedImageSources = (src = "") => {
+  if (typeof src !== "string") return { fallback: src, avif: null, webp: null };
+  const match = src.match(/^(.*)\.(jpe?g|png|webp)$/i);
+  if (!match) return { fallback: src, avif: null, webp: null };
+  const basePath = match[1];
+  const extension = match[2].toLowerCase();
+  return {
+    fallback: src,
+    avif: `${basePath}.avif`,
+    webp: extension === "webp" ? null : `${basePath}.webp`
+  };
+};
+
+const GalleryImageCard = ({ image, onOpenPhoto }) => {
+  const sources = getOptimizedImageSources(image.src);
+  return (
+    <figure className="gallery-card gallery-card--single">
+      <picture>
+        {sources.avif && <source srcSet={sources.avif} type="image/avif" />}
+        {sources.webp && <source srcSet={sources.webp} type="image/webp" />}
+        <img
+          className="gallery-card-content"
+          src={sources.fallback}
+          alt={image.alt}
+          width={image.width || defaultGalleryImageWidth}
+          height={image.height || defaultGalleryImageHeight}
+          loading="lazy"
+          decoding="async"
+          onError={handleGalleryImageError}
+          role="button"
+          tabIndex={0}
+          aria-label={`Open ${image.title}`}
+          onClick={() => onOpenPhoto(image)}
+          onKeyDown={(event) => openPhotoOnKeyboard(event, onOpenPhoto, image)}
+        />
+      </picture>
+      <GalleryOverlay title={image.title} description={image.description} />
+    </figure>
+  );
+};
 
 const GalleryCollageCard = ({ item, onOpenPhoto }) => (
   <figure className="gallery-card gallery-card--collage">
     <div className="gallery-card-content gallery-collage-grid">
-      {item.images.map((photo, index) => (
-        <button
-          key={`${photo.src}-${index}`}
-          type="button"
-          className="gallery-collage-cell"
-          aria-label={`Open ${item.title} photo ${index + 1}`}
-          onClick={() => onOpenPhoto(photo)}
-        >
-          <img
-            src={photo.src}
-            alt={photo.alt}
-            width={photo.width || defaultGalleryImageWidth}
-            height={photo.height || defaultGalleryImageHeight}
-            loading="lazy"
-            decoding="async"
-            onError={handleGalleryImageError}
-          />
-        </button>
-      ))}
+      {item.images.map((photo, index) => {
+        const sources = getOptimizedImageSources(photo.src);
+        return (
+          <button
+            key={`${photo.src}-${index}`}
+            type="button"
+            className="gallery-collage-cell"
+            aria-label={`Open ${item.title} photo ${index + 1}`}
+            onClick={() => onOpenPhoto(photo)}
+          >
+            <picture>
+              {sources.avif && <source srcSet={sources.avif} type="image/avif" />}
+              {sources.webp && <source srcSet={sources.webp} type="image/webp" />}
+              <img
+                src={sources.fallback}
+                alt={photo.alt}
+                width={photo.width || defaultGalleryImageWidth}
+                height={photo.height || defaultGalleryImageHeight}
+                loading="lazy"
+                decoding="async"
+                onError={handleGalleryImageError}
+              />
+            </picture>
+          </button>
+        );
+      })}
     </div>
     <GalleryOverlay title={item.title} description={item.description} />
   </figure>
@@ -980,6 +1008,7 @@ function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [projectFilter, setProjectFilter] = useState("All");
   const [skillQuery, setSkillQuery] = useState("");
+  const skillSearchInputRef = useRef(null);
   const deferredSkillQuery = useDeferredValue(skillQuery);
   const [openSkillGroups, setOpenSkillGroups] = useState(() => new Set());
   const [theme, setTheme] = useState(() => {
@@ -1051,6 +1080,10 @@ function App() {
   useEffect(() => {
     setClarityTag("project_filter", projectFilter);
   }, [projectFilter]);
+
+  useEffect(() => {
+    syncGoogleAnalyticsConsent(clarityConsent || "denied");
+  }, [clarityConsent]);
 
   useEffect(() => {
     if (!activePhoto) return undefined;
@@ -1154,6 +1187,14 @@ function App() {
     setClarityTag("skills_search_active", nextHasValue ? "yes" : "no");
   };
 
+  const handleSkillSearchClear = () => {
+    if (skillQuery.trim() === "") return;
+    setSkillQuery("");
+    setClarityTag("skills_search_active", "no");
+    trackClarityEvent("skills_search_cleared");
+    skillSearchInputRef.current?.focus();
+  };
+
   const toggleSkillGroup = (title) => {
     trackClarityEvent("skill_group_toggled");
     setClarityTag("last_skill_group", title);
@@ -1195,6 +1236,10 @@ function App() {
     setClarityConsent(status);
     trackClarityEvent(`cookie_consent_${toClarityToken(status)}_selected`);
   };
+
+  const activePhotoSources = activePhoto
+    ? getOptimizedImageSources(activePhoto.src)
+    : null;
 
   const renderHighlightedPoint = (text) => {
     const parts = text.split(emphasisRegex);
@@ -1273,14 +1318,6 @@ function App() {
                   LinkedIn
                 </a>
                 <a
-                  href={profile.github}
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={() => handleHeroLinkClick("github")}
-                >
-                  GitHub
-                </a>
-                <a
                   href={profile.resumeLabel}
                   target="_blank"
                   rel="noreferrer"
@@ -1306,15 +1343,24 @@ function App() {
                 aria-label="Open full profile photo"
               >
                 <div className="avatar-frame">
-                  <img
-                    className="avatar"
-                    src={profile.avatar}
-                    alt={profile.name}
-                    width={profileImageWidth}
-                    height={profileImageHeight}
-                    loading="eager"
-                    decoding="async"
-                  />
+                  <picture>
+                    {profile.avatarAvif && (
+                      <source srcSet={profile.avatarAvif} type="image/avif" />
+                    )}
+                    {profile.avatarWebp && (
+                      <source srcSet={profile.avatarWebp} type="image/webp" />
+                    )}
+                    <img
+                      className="avatar"
+                      src={profile.avatar}
+                      alt={profile.name}
+                      width={profileImageWidth}
+                      height={profileImageHeight}
+                      loading="eager"
+                      decoding="async"
+                      fetchpriority="high"
+                    />
+                  </picture>
                 </div>
                 <span className="avatar-hint">Click to enlarge</span>
               </button>
@@ -1370,14 +1416,29 @@ function App() {
           </p>
 
           <div className="skills-toolbar">
-            <input
-              type="text"
-              className="skill-search"
-              value={skillQuery}
-              onChange={handleSkillSearchChange}
-              placeholder="Search skills..."
-              aria-label="Search tools and technologies"
-            />
+            <div className="skill-search-wrap">
+              <input
+                ref={skillSearchInputRef}
+                type="text"
+                id="skill-search"
+                name="skillSearch"
+                className="skill-search"
+                value={skillQuery}
+                onChange={handleSkillSearchChange}
+                placeholder="Search skills..."
+                aria-label="Search tools and technologies"
+              />
+              {skillQuery.trim() !== "" && (
+                <button
+                  type="button"
+                  className="skill-search-clear"
+                  aria-label="Clear skills search"
+                  onClick={handleSkillSearchClear}
+                >
+                  x
+                </button>
+              )}
+            </div>
             <div className="skills-actions">
               <button type="button" onClick={expandAllSkillGroups}>
                 Expand all
@@ -1443,33 +1504,35 @@ function App() {
                         </span>
                       </button>
 
-                      <div className={`skill-items ${isOpen ? "open" : ""}`}>
-                        {group.items.map((item) => {
-                          const displayLabel = toSkillDisplayLabel(item);
-                          const icon = findTechIcon(displayLabel);
-                          return (
-                            <span
-                              className="chip with-icon"
-                              key={`${group.title}-${item}`}
-                              title={item}
-                            >
-                              <img
-                                className="inline-tech-icon"
-                                src={icon.src}
-                                alt={icon.alt}
-                                width={inlineTechIconSize}
-                                height={inlineTechIconSize}
-                                loading="lazy"
-                                decoding="async"
-                                onError={(event) =>
-                                  handleIconLoadError(event, displayLabel)
-                                }
-                              />
-                              <span>{displayLabel}</span>
-                            </span>
-                          );
-                        })}
-                      </div>
+                      {isOpen && (
+                        <div className="skill-items open">
+                          {group.items.map((item) => {
+                            const displayLabel = toSkillDisplayLabel(item);
+                            const icon = findTechIcon(displayLabel);
+                            return (
+                              <span
+                                className="chip with-icon"
+                                key={`${group.title}-${item}`}
+                                title={item}
+                              >
+                                <img
+                                  className="inline-tech-icon"
+                                  src={icon.src}
+                                  alt={icon.alt}
+                                  width={inlineTechIconSize}
+                                  height={inlineTechIconSize}
+                                  loading="lazy"
+                                  decoding="async"
+                                  onError={(event) =>
+                                    handleIconLoadError(event, displayLabel)
+                                  }
+                                />
+                                <span>{displayLabel}</span>
+                              </span>
+                            );
+                          })}
+                        </div>
+                      )}
                     </article>
                   );
                 })}
@@ -1850,14 +1913,23 @@ function App() {
                     );
                   })}
                 </div>
-                <a
-                  href={item.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={() => handleProjectClick(item.name)}
-                >
-                  View Project
-                </a>
+                {item.highlights?.length > 0 && (
+                  <ul className="project-highlights">
+                    {item.highlights.map((point) => (
+                      <li key={point}>{point}</li>
+                    ))}
+                  </ul>
+                )}
+                {item.link && (
+                  <a
+                    href={item.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => handleProjectClick(item.name)}
+                  >
+                    View Project
+                  </a>
+                )}
               </article>
             ))}
           </div>
@@ -1942,14 +2014,6 @@ function App() {
             >
               LinkedIn
             </a>
-            <a
-              href={profile.github}
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => handleContactLinkClick("github")}
-            >
-              GitHub
-            </a>
           </div>
         </section>
       </main>
@@ -1957,8 +2021,8 @@ function App() {
       {!clarityConsent && (
         <aside className="cookie-consent" role="dialog" aria-live="polite">
           <p>
-            We use Clarity analytics cookies to improve the portfolio experience. You can
-            accept or decline analytics tracking.
+            We use Clarity and Google Analytics cookies to improve the portfolio
+            experience. You can accept or decline analytics tracking.
           </p>
           <div className="cookie-consent-actions">
             <button type="button" onClick={() => handleConsentChoice("granted")}>
@@ -1990,17 +2054,25 @@ function App() {
           >
             ×
           </button>
-          <img
-            className="photo-preview"
-            src={activePhoto.src}
-            alt={activePhoto.alt}
-            width={activePhoto.width || defaultGalleryImageWidth}
-            height={activePhoto.height || defaultGalleryImageHeight}
-            loading="eager"
-            decoding="async"
-            onError={handleGalleryImageError}
-            onClick={(event) => event.stopPropagation()}
-          />
+          <picture>
+            {activePhotoSources?.avif && (
+              <source srcSet={activePhotoSources.avif} type="image/avif" />
+            )}
+            {activePhotoSources?.webp && (
+              <source srcSet={activePhotoSources.webp} type="image/webp" />
+            )}
+            <img
+              className="photo-preview"
+              src={activePhotoSources?.fallback || activePhoto.src}
+              alt={activePhoto.alt}
+              width={activePhoto.width || defaultGalleryImageWidth}
+              height={activePhoto.height || defaultGalleryImageHeight}
+              loading="eager"
+              decoding="async"
+              onError={handleGalleryImageError}
+              onClick={(event) => event.stopPropagation()}
+            />
+          </picture>
         </div>
       )}
     </div>

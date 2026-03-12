@@ -7,103 +7,104 @@ export const profile = {
   visaStatus: "Right to Work in the UK via Graduate Route Visa valid till March 2028.",
   email: "darsh.bhamare.uk@gmail.com",
   linkedin: "https://linkedin.com/in/darshan-bhamare-cloud",
-  github: "https://github.com/Dbhamare",
   resumeLabel: "/Resume.pdf",
-  avatar: "/profile.jpg",
+  avatar: "/git.webp",
+  avatarWebp: "/git.webp",
+  avatarAvif: "/git.avif",
   phone: "+447818987884"
 };
 
 export const orbitIcons = [
   {
     name: "AWS",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg"
+    src: "/icons/devicon/amazonwebservices/amazonwebservices-original-wordmark.svg"
   },
   {
     name: "Linux",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg"
+    src: "/icons/devicon/linux/linux-original.svg"
   },
   {
     name: "Kubernetes",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg"
+    src: "/icons/devicon/kubernetes/kubernetes-plain.svg"
   },
   {
     name: "Terraform",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg"
+    src: "/icons/devicon/terraform/terraform-original.svg"
   }
 ];
 
 export const coreStack = [
   {
     name: "AWS",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg"
+    src: "/icons/devicon/amazonwebservices/amazonwebservices-original-wordmark.svg"
   },
   {
     name: "Azure",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg"
+    src: "/icons/devicon/azure/azure-original.svg"
   },
   {
     name: "Kubernetes",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg"
+    src: "/icons/devicon/kubernetes/kubernetes-plain.svg"
   },
   {
     name: "Terraform",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg"
+    src: "/icons/devicon/terraform/terraform-original.svg"
   },
   {
     name: "Docker",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg"
+    src: "/icons/devicon/docker/docker-original.svg"
   },
   {
     name: "Jenkins",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jenkins/jenkins-original.svg"
+    src: "/icons/devicon/jenkins/jenkins-original.svg"
   },
   {
     name: "Linux",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg"
+    src: "/icons/devicon/linux/linux-original.svg"
   },
   {
     name: "Ansible",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ansible/ansible-original.svg"
+    src: "/icons/devicon/ansible/ansible-original.svg"
   },
   {
     name: "Helm",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/helm/helm-original.svg"
+    src: "/icons/devicon/helm/helm-original.svg"
   },
   {
     name: "Prometheus",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/prometheus/prometheus-original.svg"
+    src: "/icons/devicon/prometheus/prometheus-original.svg"
   },
   {
     name: "Grafana",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/grafana/grafana-original.svg"
+    src: "/icons/devicon/grafana/grafana-original.svg"
   },
   {
     name: "MongoDB",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg"
+    src: "/icons/devicon/mongodb/mongodb-original.svg"
   },
   {
     name: "GitHub Actions",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+    src: "/icons/devicon/github/github-original.svg"
   },
   {
     name: "CloudWatch",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg"
+    src: "/icons/devicon/amazonwebservices/amazonwebservices-original-wordmark.svg"
   },
   {
     name: "Azure Monitor",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg"
+    src: "/icons/devicon/azure/azure-original.svg"
   },
   {
     name: "AWS MSK",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg"
+    src: "/icons/devicon/amazonwebservices/amazonwebservices-original-wordmark.svg"
   },
   {
     name: "ElasticSearch",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/elasticsearch/elasticsearch-original.svg"
+    src: "/icons/devicon/elasticsearch/elasticsearch-original.svg"
   },
   {
     name: "Git",
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
+    src: "/icons/devicon/git/git-original.svg"
   }
 ];
 
@@ -256,7 +257,7 @@ export const highlights = [
   },
   {
     label: "Cloud Operations Roles",
-    value: "3"
+    value: "2"
   },
   {
     label: "Certifications",
@@ -268,7 +269,7 @@ export const experience = [
   {
     company:
       "Conga (Apttus Corporation) | Aress Software & Education Technologies (P) Ltd | Nashik, India",
-    title: "Cloud Operations Engineer Contractor",
+    title: "Senior Cloud Engineer Contractor",
     duration: "May 2023 - Aug 2024",
     points: [
       "Administered GitHub repositories, implemented CI/CD pipelines, and supported Agile workflows.",
@@ -286,7 +287,7 @@ export const experience = [
   {
     company: "Aress Software & Education Technologies (P) Ltd | Nashik, India",
     title: "Cloud Operations Engineer",
-    duration: "Feb 2021 - May 2023",
+    duration: "Sep 2020 - May 2023",
     points: [
       "Deployed and managed scalable, fault-tolerant cloud infrastructure using AWS EC2, VPC, S3, RDS, IAM and Azure VMs.",
       "Configured AWS CloudWatch alerts, dashboards, and proactive monitoring for CPU, memory, disk space and system health; reduced incident detection time by 35%.",
@@ -294,29 +295,82 @@ export const experience = [
       "Performed system audits, performance tuning, and disaster recovery drills, improving uptime.",
       "Created automation scripts for provisioning, patching, and monitoring workloads, reducing manual effort by 70%."
     ]
-  },
-  {
-    company: "Aress Software & Education Technologies (P) Ltd | Nashik, India",
-    title: "Technical Support Engineer",
-    duration: "Sep 2020 - Feb 2021",
-    points: [
-      "Provided L2 support for hosting clients via WHM/cPanel and Plesk.",
-      "Configured DNS, FTP, email services, SSL certificates, and handled website migrations.",
-      "Managed Linux and Windows servers, including security, firewalls, vulnerability patching, and monthly upgrades, reducing vulnerabilities by 40%.",
-      "Implemented Active Directory services with user/group management, Group Policy, and domain controllers.",
-      "Monitored infrastructure and applications using Nagios, AWS CloudWatch, and related tools."
-    ]
   }
 ];
 
 export const projects = [
   {
+    name: "Multi-Cloud Microservices CI/CD Pipeline",
+    category: "Cloud & DevOps",
+    summary:
+      "Designed and optimized a multi-cloud CI/CD delivery model for microservices-based SaaS workloads, enabling faster and more reliable enterprise releases.",
+    stack: [
+      "Jenkins",
+      "GitHub",
+      "Helm",
+      "Kubernetes",
+      "AWS EKS",
+      "Azure AKS",
+      "IBM IKS",
+      "CI/CD"
+    ],
+    highlights: [
+      "Engineered multi-branch Jenkins pipelines with automated quality gates, compressing release cycles from 2 weeks to 3 days.",
+      "Deployed and operated production multi-tenant microservices across AWS EKS, Azure AKS, and IBM IKS using Helm-based release management.",
+      "Administered repository and branching governance to streamline Agile delivery and improve cross-team handoffs.",
+      "Implemented repeatable deployment and rollback patterns to strengthen release predictability and platform stability."
+    ]
+  },
+  {
+    name: "Infrastructure as Code (IaC) Automation & Self-Healing Network",
+    category: "Cloud & DevOps",
+    summary:
+      "Led an Infrastructure as Code transformation that automated provisioning and deployments while embedding high availability and self-healing capabilities into the platform architecture.",
+    stack: [
+      "Terraform",
+      "Ansible",
+      "Kubernetes",
+      "Helm",
+      "Elastic Load Balancing",
+      "Auto Scaling",
+      "HPA",
+      "IaC"
+    ],
+    highlights: [
+      "Automated infrastructure provisioning and deployment workflows with Terraform and Ansible, eliminating 60% of manual effort.",
+      "Enforced strict environment parity across development, staging, and production using reusable IaC modules and controlled change workflows.",
+      "Architected high-availability Kubernetes workloads using self-healing primitives, Elastic Load Balancing, and Auto Scaling.",
+      "Implemented Horizontal Pod Autoscaling (HPA), delivering measurable gains in platform reliability and scalability during demand spikes."
+    ]
+  },
+  {
+    name: "Centralized Observability and Incident Reduction Platform",
+    category: "Cloud & DevOps",
+    summary:
+      "Built a centralized observability and automation framework that improved operational visibility, accelerated incident response, and reinforced SLA performance.",
+    stack: [
+      "AWS CloudWatch",
+      "Python",
+      "Bash",
+      "Monitoring",
+      "Disaster Recovery",
+      "Runbooks",
+      "SLA",
+      "MTTR"
+    ],
+    highlights: [
+      "Configured CloudWatch alarms, dashboards, and proactive alerts for CPU, memory, and disk health, reducing mean incident detection time by 35%.",
+      "Developed Python and Bash automation for provisioning, patching, and monitoring workflows, cutting manual workload by 70%.",
+      "Led disaster recovery drills and system audits to improve operational readiness and overall uptime posture.",
+      "Authored comprehensive runbooks that improved SLA adherence and reduced Mean Time To Recovery (MTTR)."
+    ]
+  },
+  {
     name: "Debate Sessions in Higher Education",
     category: "Full Stack",
     summary:
-      "Built an online MERN-stack debate platform with role-based access for students and instructors, JWT authentication, unique IDs, and AI-driven debate analytics.",
-    stack: ["MongoDB", "Express.js", "React", "Node.js", "JWT", "AI"],
-    link: "#"
+      "Built an online MERN-stack debate platform with role-based access for students and instructors, JWT authentication, unique IDs, and AI-driven debate analytics. I completed this project as part of my MSc Cloud Computing degree to gain hands-on development experience and was awarded a distinction.",
+    stack: ["MongoDB", "Express.js", "React", "Node.js", "JWT", "AI"]
   }
 ];
 
@@ -383,7 +437,7 @@ export const architectureFlow = [
 
 export const galleryImages = [
   {
-    src: "/gallery/bike-goa.jpg",
+    src: "/gallery/bike-goa.webp",
     alt: "Riding in Goa",
     title: "Goa Rides",
     description: "Exploring the coastal roads on two wheels.",
@@ -391,7 +445,7 @@ export const galleryImages = [
     height: 1920
   },
   {
-    src: "/gallery/go-kart.jpg",
+    src: "/gallery/go-kart.webp",
     alt: "Go-kart track",
     title: "Track Day",
     description: "Weekend go-karting session.",
@@ -399,7 +453,7 @@ export const galleryImages = [
     height: 1080
   },
   {
-    src: "/gallery/sunset.jpg",
+    src: "/gallery/sunset.webp",
     alt: "Sunset skyline",
     title: "City Sunset",
     description: "Stopping to catch the view over the skyline.",
@@ -407,7 +461,7 @@ export const galleryImages = [
     height: 2252
   },
   {
-    src: "/gallery/rider.jpg",
+    src: "/gallery/rider.webp",
     alt: "Rider on motorcycle",
     title: "Highway Miles",
     description: "Nothing beats an open road at the end of the day.",
@@ -415,7 +469,7 @@ export const galleryImages = [
     height: 4032
   },
   {
-    src: "/gallery/team-last-day.jpg",
+    src: "/gallery/team-last-day.webp",
     alt: "Cloud Engineering Team",
     title: "The Cloud Crew",
     description: "Farewell shot with the engineering team on my last day.",
@@ -423,7 +477,7 @@ export const galleryImages = [
     height: 2252
   },
   {
-    src: "/gallery/employee-award.jpg",
+    src: "/gallery/employee-award.webp",
     alt: "Receiving Employee of the Month award",
     title: "Employee of the Month",
     description:
@@ -438,25 +492,25 @@ export const galleryImages = [
       "Inaugurating the new company cafe alongside the Director and Head of Technology. Named it 'Cloud Byte' because, well, the Cloud is the future!",
     images: [
       {
-        src: "/gallery/cafe-ribbon.jpg",
+        src: "/gallery/cafe-ribbon.webp",
         alt: "Cutting ribbon",
         width: 4000,
         height: 3000
       },
       {
-        src: "/gallery/cafe-signage.jpg",
+        src: "/gallery/cafe-signage.webp",
         alt: "Cafe signage",
         width: 4000,
         height: 3000
       },
       {
-        src: "/gallery/cafe-mgmt-1.jpg",
+        src: "/gallery/cafe-mgmt-1.webp",
         alt: "Management group 1",
         width: 4000,
         height: 3000
       },
       {
-        src: "/gallery/cafe-mgmt-2.jpg",
+        src: "/gallery/cafe-mgmt-2.webp",
         alt: "Management group 2",
         width: 4000,
         height: 3000
