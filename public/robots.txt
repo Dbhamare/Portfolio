@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://darshanbhamarecloud.vercel.app/sitemap.xml
