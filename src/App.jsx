@@ -290,19 +290,19 @@ const techIconLibrary = [
   {
     id: "ibm",
     keys: ["ibm cloud"],
-    src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/ibm.svg",
+    src: "/icons/external/simple-ibm.svg",
     alt: "IBM"
   },
   {
     id: "datadog",
     keys: ["datadog"],
-    src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/datadog.svg",
+    src: "/icons/external/simple-datadog.svg",
     alt: "Datadog"
   },
   {
     id: "loki",
     keys: ["loki"],
-    src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/grafana.svg",
+    src: "/icons/external/simple-grafana.svg",
     alt: "Loki"
   },
   {
@@ -399,7 +399,7 @@ const skillHeaderPreviewIcons = {
     },
     {
       name: "IBM Cloud",
-      src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/ibm.svg",
+      src: "/icons/external/simple-ibm.svg",
       alt: "IBM Cloud"
     }
   ],
@@ -455,7 +455,7 @@ const skillHeaderPreviewIcons = {
     },
     {
       name: "Datadog",
-      src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/datadog.svg",
+      src: "/icons/external/simple-datadog.svg",
       alt: "Datadog"
     }
   ],
@@ -706,43 +706,43 @@ const getSkillHeaderPreviewIcons = (groupTitle) => skillHeaderPreviewIcons[group
 
 const architectureServiceIconMap = {
   "Route 53": {
-    src: "https://icon.icepanel.io/AWS/svg/Networking-Content-Delivery/Route-53.svg",
+    src: "/icons/external/aws-route53.svg",
     alt: "Route 53"
   },
   CloudFront: {
-    src: "https://icon.icepanel.io/AWS/svg/Networking-Content-Delivery/CloudFront.svg",
+    src: "/icons/external/aws-cloudfront.svg",
     alt: "CloudFront"
   },
   "AWS WAF": {
-    src: "https://icon.icepanel.io/AWS/svg/Security-Identity-Compliance/WAF.svg",
+    src: "/icons/external/aws-waf.svg",
     alt: "AWS WAF"
   },
   "Internet-facing ALB": {
-    src: "https://icon.icepanel.io/AWS/svg/Networking-Content-Delivery/Elastic-Load-Balancing.svg",
+    src: "/icons/external/aws-elb.svg",
     alt: "Application Load Balancer"
   },
   "NAT Gateway A": {
-    src: "https://api.iconify.design/logos:aws-vpc.svg",
+    src: "/icons/external/aws-vpc.svg",
     alt: "NAT Gateway"
   },
   "NAT Gateway B": {
-    src: "https://api.iconify.design/logos:aws-vpc.svg",
+    src: "/icons/external/aws-vpc.svg",
     alt: "NAT Gateway"
   },
   "Bastion Host": {
-    src: "https://icon.icepanel.io/AWS/svg/Compute/EC2.svg",
+    src: "/icons/external/aws-ec2.svg",
     alt: "Bastion Host"
   },
   "EKS Managed Control Plane": {
-    src: "https://icon.icepanel.io/AWS/svg/Containers/Elastic-Kubernetes-Service.svg",
+    src: "/icons/external/aws-eks.svg",
     alt: "EKS Managed Control Plane"
   },
   "EKS Self-Managed Nodes A (EC2 ASG)": {
-    src: "https://icon.icepanel.io/AWS/svg/Compute/EC2.svg",
+    src: "/icons/external/aws-ec2.svg",
     alt: "EKS Self-Managed Nodes"
   },
   "EKS Self-Managed Nodes B (EC2 ASG)": {
-    src: "https://icon.icepanel.io/AWS/svg/Compute/EC2.svg",
+    src: "/icons/external/aws-ec2.svg",
     alt: "EKS Self-Managed Nodes"
   },
   "Auth Service": {
@@ -762,23 +762,23 @@ const architectureServiceIconMap = {
     alt: "Payment Service"
   },
   "RDS Primary": {
-    src: "https://icon.icepanel.io/AWS/svg/Database/RDS.svg",
+    src: "/icons/external/aws-rds.svg",
     alt: "RDS Primary"
   },
   "RDS Standby": {
-    src: "https://icon.icepanel.io/AWS/svg/Database/RDS.svg",
+    src: "/icons/external/aws-rds.svg",
     alt: "RDS Standby"
   },
   "ElastiCache Redis": {
-    src: "https://icon.icepanel.io/AWS/svg/Database/ElastiCache.svg",
+    src: "/icons/external/aws-elasticache.svg",
     alt: "ElastiCache Redis"
   },
   "Amazon S3": {
-    src: "https://icon.icepanel.io/AWS/svg/Storage/Simple-Storage-Service.svg",
+    src: "/icons/external/aws-s3.svg",
     alt: "Amazon S3"
   },
   "IAM Roles": {
-    src: "https://icon.icepanel.io/AWS/svg/Security-Identity-Compliance/Identity-and-Access-Management.svg",
+    src: "/icons/external/aws-iam.svg",
     alt: "IAM Roles"
   },
   GitHub: {
@@ -790,7 +790,7 @@ const architectureServiceIconMap = {
     alt: "Jenkins"
   },
   "Amazon ECR": {
-    src: "https://icon.icepanel.io/AWS/svg/Containers/Elastic-Container-Registry.svg",
+    src: "/icons/external/aws-ecr.svg",
     alt: "Amazon ECR"
   },
   Terraform: {
@@ -806,7 +806,7 @@ const architectureServiceIconMap = {
     alt: "Helm and Terraform"
   },
   "Amazon EKS": {
-    src: "https://icon.icepanel.io/AWS/svg/Containers/Elastic-Kubernetes-Service.svg",
+    src: "/icons/external/aws-eks.svg",
     alt: "Amazon EKS"
   },
   "Prometheus & Grafana": {
@@ -818,15 +818,15 @@ const architectureServiceIconMap = {
     alt: "ELK Stack"
   },
   "AWS CloudWatch": {
-    src: "https://icon.icepanel.io/AWS/svg/Management-Governance/CloudWatch.svg",
+    src: "/icons/external/aws-cloudwatch.svg",
     alt: "AWS CloudWatch"
   },
   Datadog: {
-    src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/datadog.svg",
+    src: "/icons/external/simple-datadog.svg",
     alt: "Datadog"
   },
   PagerDuty: {
-    src: "https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/pagerduty.svg",
+    src: "/icons/external/simple-pagerduty.svg",
     alt: "PagerDuty"
   }
 };
@@ -911,9 +911,25 @@ const inlineTechIconSize = 16;
 const skillPreviewIconSize = 20;
 const orbitIconSize = 36;
 
-const handleGalleryImageError = (event) => {
-  event.currentTarget.onerror = null;
-  event.currentTarget.src = galleryPlaceholderSrc;
+const buildGalleryThumbPath = (src = "") => {
+  if (typeof src !== "string") return src;
+  return src.startsWith("/gallery/")
+    ? src.replace("/gallery/", "/gallery/thumbs/")
+    : src;
+};
+
+const handleGalleryImageError = (event, fallbackSrc = galleryPlaceholderSrc) => {
+  const target = event.currentTarget;
+  const hasRetried = target.dataset.retryFallback === "1";
+
+  if (!hasRetried && fallbackSrc && target.getAttribute("src") !== fallbackSrc) {
+    target.dataset.retryFallback = "1";
+    target.src = fallbackSrc;
+    return;
+  }
+
+  target.onerror = null;
+  target.src = galleryPlaceholderSrc;
 };
 
 const GalleryOverlay = ({ title, description }) => (
@@ -943,21 +959,28 @@ const getOptimizedImageSources = (src = "") => {
 };
 
 const GalleryImageCard = ({ image, onOpenPhoto }) => {
-  const sources = getOptimizedImageSources(image.src);
+  const fullSources = getOptimizedImageSources(image.src);
+  const thumbSources = getOptimizedImageSources(buildGalleryThumbPath(image.src));
+
   return (
     <figure className="gallery-card gallery-card--single">
       <picture>
-        {sources.avif && <source srcSet={sources.avif} type="image/avif" />}
-        {sources.webp && <source srcSet={sources.webp} type="image/webp" />}
+        {(thumbSources.avif || fullSources.avif) && (
+          <source srcSet={thumbSources.avif || fullSources.avif} type="image/avif" />
+        )}
+        {(thumbSources.webp || fullSources.webp) && (
+          <source srcSet={thumbSources.webp || fullSources.webp} type="image/webp" />
+        )}
         <img
           className="gallery-card-content"
-          src={sources.fallback}
+          src={thumbSources.fallback || fullSources.fallback}
           alt={image.alt}
           width={image.width || defaultGalleryImageWidth}
           height={image.height || defaultGalleryImageHeight}
           loading="lazy"
+          fetchpriority="low"
           decoding="async"
-          onError={handleGalleryImageError}
+          onError={(event) => handleGalleryImageError(event, fullSources.fallback)}
           role="button"
           tabIndex={0}
           aria-label={`Open ${image.title}`}
@@ -974,7 +997,9 @@ const GalleryCollageCard = ({ item, onOpenPhoto }) => (
   <figure className="gallery-card gallery-card--collage">
     <div className="gallery-card-content gallery-collage-grid">
       {item.images.map((photo, index) => {
-        const sources = getOptimizedImageSources(photo.src);
+        const fullSources = getOptimizedImageSources(photo.src);
+        const thumbSources = getOptimizedImageSources(buildGalleryThumbPath(photo.src));
+
         return (
           <button
             key={`${photo.src}-${index}`}
@@ -984,16 +1009,21 @@ const GalleryCollageCard = ({ item, onOpenPhoto }) => (
             onClick={() => onOpenPhoto(photo)}
           >
             <picture>
-              {sources.avif && <source srcSet={sources.avif} type="image/avif" />}
-              {sources.webp && <source srcSet={sources.webp} type="image/webp" />}
+              {(thumbSources.avif || fullSources.avif) && (
+                <source srcSet={thumbSources.avif || fullSources.avif} type="image/avif" />
+              )}
+              {(thumbSources.webp || fullSources.webp) && (
+                <source srcSet={thumbSources.webp || fullSources.webp} type="image/webp" />
+              )}
               <img
-                src={sources.fallback}
+                src={thumbSources.fallback || fullSources.fallback}
                 alt={photo.alt}
                 width={photo.width || defaultGalleryImageWidth}
                 height={photo.height || defaultGalleryImageHeight}
                 loading="lazy"
+                fetchpriority="low"
                 decoding="async"
-                onError={handleGalleryImageError}
+                onError={(event) => handleGalleryImageError(event, fullSources.fallback)}
               />
             </picture>
           </button>
