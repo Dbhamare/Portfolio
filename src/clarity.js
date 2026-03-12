@@ -1,9 +1,8 @@
-import Clarity from "@microsoft/clarity";
-
 const CLARITY_PROJECT_ID = "vulijlj69q";
 const CONSENT_STORAGE_KEY = "clarity-consent-v2";
 const VISITOR_ID_STORAGE_KEY = "clarity-custom-id";
 const SESSION_ID_STORAGE_KEY = "clarity-custom-session-id";
+const CLARITY_IDLE_TIMEOUT_MS = 2000;
 
 const consentProfiles = {
   granted: { ad_Storage: "granted", analytics_Storage: "granted" },
@@ -11,6 +10,15 @@ const consentProfiles = {
 };
 
 const isBrowser = () => typeof window !== "undefined";
+
+let clarityApi = null;
+let clarityApiPromise = null;
+let pendingOperations = [];
+let flushScheduled = false;
+let flushing = false;
+let initRequested = false;
+let cachedVisitorId = null;
+let cachedSessionId = null;
 
 const buildId = (prefix) => {
   if (isBrowser() && window.crypto && typeof window.crypto.randomUUID === "function") {
@@ -21,24 +29,120 @@ const buildId = (prefix) => {
 
 const readStoredConsent = () => {
   if (!isBrowser()) return null;
-  const stored = window.localStorage.getItem(CONSENT_STORAGE_KEY);
+  let stored = null;
+  try {
+    stored = window.localStorage.getItem(CONSENT_STORAGE_KEY);
+  } catch {
+    stored = null;
+  }
   return stored === "granted" || stored === "denied" ? stored : null;
 };
 
 const getOrCreateStorageId = (storage, key, prefix) => {
-  const existing = storage.getItem(key);
+  let existing = null;
+  try {
+    existing = storage.getItem(key);
+  } catch {
+    existing = null;
+  }
   if (existing) return existing;
   const next = buildId(prefix);
-  storage.setItem(key, next);
+  try {
+    storage.setItem(key, next);
+  } catch {
+    // Fall through with in-memory id when storage is unavailable.
+  }
   return next;
 };
 
 const safeCall = (callback) => {
   try {
     callback();
-  } catch (error) {
+  } catch {
     // Prevent analytics failures from breaking UI interactions.
   }
+};
+
+const scheduleInIdle = (callback) => {
+  if (!isBrowser()) return;
+
+  if (typeof window.requestIdleCallback === "function") {
+    window.requestIdleCallback(callback, { timeout: CLARITY_IDLE_TIMEOUT_MS });
+    return;
+  }
+
+  window.setTimeout(callback, 0);
+};
+
+function requestFlush() {
+  if (!isBrowser() || flushScheduled) return;
+  flushScheduled = true;
+
+  const runFlush = () => scheduleInIdle(() => void flushPendingOperations());
+  if (document.readyState === "complete") {
+    runFlush();
+    return;
+  }
+
+  window.addEventListener("load", runFlush, { once: true });
+}
+
+const loadClarityApi = async () => {
+  if (clarityApi) return clarityApi;
+  if (!clarityApiPromise) {
+    clarityApiPromise = import("@microsoft/clarity")
+      .then((module) => module.default || module)
+      .catch(() => null);
+  }
+
+  const loadedApi = await clarityApiPromise;
+  if (loadedApi) clarityApi = loadedApi;
+  return clarityApi;
+};
+
+const ensureClarityInitialized = async () => {
+  if (!isBrowser()) return null;
+  const loadedApi = await loadClarityApi();
+  if (!loadedApi) return null;
+
+  if (!window.__clarityInitialized) {
+    safeCall(() => {
+      loadedApi.init(CLARITY_PROJECT_ID);
+    });
+    window.__clarityInitialized = true;
+  }
+
+  return loadedApi;
+};
+
+const flushPendingOperations = async () => {
+  if (!isBrowser() || flushing) return;
+  flushing = true;
+  flushScheduled = false;
+
+  const loadedApi = await ensureClarityInitialized();
+  if (!loadedApi) {
+    pendingOperations = [];
+    flushing = false;
+    return;
+  }
+
+  const operations = pendingOperations;
+  pendingOperations = [];
+  operations.forEach((operation) => {
+    safeCall(() => {
+      operation(loadedApi);
+    });
+  });
+
+  flushing = false;
+  if (pendingOperations.length) requestFlush();
+};
+
+const enqueueOperation = (operation) => {
+  if (!isBrowser()) return;
+  pendingOperations.push(operation);
+  requestFlush();
 };
 
 const toPageId = () => {
@@ -51,12 +155,8 @@ export const getClarityConsentStatus = () => readStoredConsent();
 
 export const initializeClarity = () => {
   if (!isBrowser()) return;
-  if (window.__clarityInitialized) return;
-
-  safeCall(() => {
-    Clarity.init(CLARITY_PROJECT_ID);
-  });
-  window.__clarityInitialized = true;
+  if (initRequested) return;
+  initRequested = true;
 
   identifyVisitor("portfolio-visitor");
   setClarityTag("site", "darshan-portfolio");
@@ -70,55 +170,66 @@ export const initializeClarity = () => {
 export const identifyVisitor = (friendlyName = "visitor", pageId = toPageId()) => {
   if (!isBrowser()) return;
 
-  const visitorId = getOrCreateStorageId(
-    window.localStorage,
-    VISITOR_ID_STORAGE_KEY,
-    "visitor"
-  );
-  const sessionId = getOrCreateStorageId(
-    window.sessionStorage,
-    SESSION_ID_STORAGE_KEY,
-    "session"
-  );
+  enqueueOperation((api) => {
+    if (!cachedVisitorId) {
+      cachedVisitorId = getOrCreateStorageId(
+        window.localStorage,
+        VISITOR_ID_STORAGE_KEY,
+        "visitor"
+      );
+    }
+    if (!cachedSessionId) {
+      cachedSessionId = getOrCreateStorageId(
+        window.sessionStorage,
+        SESSION_ID_STORAGE_KEY,
+        "session"
+      );
+    }
 
-  safeCall(() => {
-    Clarity.identify(visitorId, sessionId, pageId, friendlyName);
+    api.identify(cachedVisitorId, cachedSessionId, pageId, friendlyName);
   });
 };
 
 export const setClarityTag = (key, value) => {
   if (!isBrowser() || !key || value === null || value === undefined) return;
   const normalizedValue = Array.isArray(value) ? value.map(String) : String(value);
-  safeCall(() => {
-    Clarity.setTag(key, normalizedValue);
+  enqueueOperation((api) => {
+    api.setTag(key, normalizedValue);
   });
 };
 
 export const trackClarityEvent = (eventName) => {
   if (!isBrowser() || !eventName) return;
-  safeCall(() => {
-    Clarity.event(eventName);
+  enqueueOperation((api) => {
+    api.event(eventName);
   });
 };
 
 export const upgradeClaritySession = (reason) => {
   if (!isBrowser() || !reason) return;
   const key = `clarity-upgrade-${reason}`;
-  if (window.sessionStorage.getItem(key)) return;
-
-  safeCall(() => {
-    Clarity.upgrade(reason);
+  try {
+    if (window.sessionStorage.getItem(key)) return;
+    window.sessionStorage.setItem(key, "1");
+  } catch {
+    // Continue even when sessionStorage is blocked.
+  }
+  enqueueOperation((api) => {
+    api.upgrade(reason);
   });
-  window.sessionStorage.setItem(key, "1");
 };
 
 export const setClarityConsentStatus = (status) => {
   if (!isBrowser()) return;
   if (status !== "granted" && status !== "denied") return;
 
-  window.localStorage.setItem(CONSENT_STORAGE_KEY, status);
-  safeCall(() => {
-    Clarity.consentV2(consentProfiles[status]);
+  try {
+    window.localStorage.setItem(CONSENT_STORAGE_KEY, status);
+  } catch {
+    // Ignore storage errors in restricted browsing contexts.
+  }
+  enqueueOperation((api) => {
+    api.consentV2(consentProfiles[status]);
   });
   setClarityTag("cookie_consent", status);
 };

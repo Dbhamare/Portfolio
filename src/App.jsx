@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import {
   achievements,
   certifications,
@@ -980,6 +980,7 @@ function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [projectFilter, setProjectFilter] = useState("All");
   const [skillQuery, setSkillQuery] = useState("");
+  const deferredSkillQuery = useDeferredValue(skillQuery);
   const [openSkillGroups, setOpenSkillGroups] = useState(() => new Set());
   const [theme, setTheme] = useState(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -1004,7 +1005,7 @@ function App() {
   }, [projectFilter]);
 
   const filteredSkillGroups = useMemo(() => {
-    const query = skillQuery.trim().toLowerCase();
+    const query = deferredSkillQuery.trim().toLowerCase();
     if (!query) return skillGroups;
 
     return skillGroups
@@ -1020,15 +1021,16 @@ function App() {
         return { ...group, items: matchedItems };
       })
       .filter(Boolean);
-  }, [skillQuery]);
+  }, [deferredSkillQuery]);
+
+  const isSkillQueryActive = deferredSkillQuery.trim() !== "";
 
   const skillColumns = useMemo(() => {
-    const queryActive = skillQuery.trim() !== "";
     const columns = [[], []];
     const heights = [0, 0];
 
     filteredSkillGroups.forEach((group) => {
-      const isOpen = queryActive || openSkillGroups.has(group.title);
+      const isOpen = isSkillQueryActive || openSkillGroups.has(group.title);
       const displayCount = group.items.length;
       const weight = isOpen ? 1.6 + Math.ceil(displayCount / 3) : 1.1;
       const targetCol = heights[0] <= heights[1] ? 0 : 1;
@@ -1038,17 +1040,13 @@ function App() {
     });
 
     return columns;
-  }, [filteredSkillGroups, openSkillGroups, skillQuery]);
+  }, [filteredSkillGroups, isSkillQueryActive, openSkillGroups]);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
     setClarityTag("theme", theme);
   }, [theme]);
-
-  useEffect(() => {
-    identifyVisitor("portfolio-visitor");
-  }, []);
 
   useEffect(() => {
     setClarityTag("project_filter", projectFilter);
@@ -1395,7 +1393,7 @@ function App() {
               <div className="skill-column" key={`skill-column-${columnIndex}`}>
                 {column.map((group) => {
                   const isOpen =
-                    skillQuery.trim() !== "" || openSkillGroups.has(group.title);
+                    isSkillQueryActive || openSkillGroups.has(group.title);
                   const previewIcons = getSkillHeaderPreviewIcons(group.title);
 
                   return (
