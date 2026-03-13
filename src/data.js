@@ -134,6 +134,23 @@ export const coreStack = [
   }
 ];
 
+export const featuredSkillsMarquee = [
+  "AWS",
+  "Azure",
+  "Kubernetes",
+  "Terraform",
+  "Docker",
+  "Jenkins",
+  "Linux",
+  "Ansible",
+  "Helm",
+  "Prometheus",
+  "Grafana",
+  "GitHub Actions"
+]
+  .map((name) => coreStack.find((item) => item.name === name))
+  .filter(Boolean);
+
 export const skillGroups = [
   {
     title: "Cloud Platforms",
@@ -278,16 +295,20 @@ export const skillGroups = [
 
 export const highlights = [
   {
-    label: "Years of Experience",
-    value: "4+"
+    label: "Cloud and DevOps experience",
+    value: "4+ years"
   },
   {
-    label: "Cloud Operations Roles",
-    value: "2"
+    label: "Manual work reduced with automation",
+    value: "70%"
   },
   {
-    label: "Certifications",
-    value: "2"
+    label: "Faster incident detection",
+    value: "35%"
+  },
+  {
+    label: "Release cycle improved",
+    value: "2 weeks to 3 days"
   }
 ];
 
@@ -404,11 +425,6 @@ export const projects = projectRecords.map((project) => ({
   ...project,
   slug: project.slug || buildProjectSlug(project.name)
 }));
-
-export const certifications = [
-  "Programming in C and C++",
-  "Programming in Core Java and Advanced Java"
-];
 
 export const education = [
   {

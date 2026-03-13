@@ -33,6 +33,52 @@ const themeInitScript = `(() => {
     document.documentElement.setAttribute("data-theme", defaultTheme);
   }
 })();`;
+const caseStudyNavItems = [
+  { id: "about", label: "About" },
+  { id: "skills", label: "Skills" },
+  { id: "experience", label: "Experience" },
+  { id: "architecture", label: "Architecture" },
+  { id: "projects", label: "Projects" },
+  { id: "education", label: "Education" },
+  { id: "gallery", label: "Gallery" },
+  { id: "contact", label: "Contact" }
+];
+const caseStudyHeaderScript = `(() => {
+  const doc = document.documentElement;
+  const nav = document.querySelector("[data-case-study-nav]");
+  const navLinks = nav ? nav.querySelectorAll("a") : [];
+  const themeButton = document.querySelector("[data-case-study-theme-toggle]");
+  const themeIcon = document.querySelector("[data-theme-icon]");
+  const menuButton = document.querySelector("[data-case-study-menu-toggle]");
+  const applyTheme = (theme) => {
+    doc.setAttribute("data-theme", theme);
+    if (themeIcon) themeIcon.textContent = theme === "dark" ? "☀" : "☾";
+  };
+
+  applyTheme(doc.getAttribute("data-theme") === "dark" ? "dark" : "light");
+
+  themeButton?.addEventListener("click", () => {
+    const nextTheme = doc.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    applyTheme(nextTheme);
+    try {
+      localStorage.setItem("theme", nextTheme);
+    } catch {}
+  });
+
+  menuButton?.addEventListener("click", () => {
+    if (!nav) return;
+    const nextOpen = !nav.classList.contains("open");
+    nav.classList.toggle("open", nextOpen);
+    menuButton.setAttribute("aria-expanded", String(nextOpen));
+  });
+
+  navLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      nav?.classList.remove("open");
+      menuButton?.setAttribute("aria-expanded", "false");
+    });
+  });
+})();`;
 
 const [{ render }, template] = await Promise.all([
   import(pathToFileURL(serverEntryPath).href),
@@ -131,6 +177,44 @@ const renderChips = (items) =>
 
 const renderListItems = (items) =>
   items.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+
+const renderCaseStudyHeader = () => `
+    <header class="site-header">
+      <nav class="nav" data-case-study-nav>
+        <a class="nav-link nav-btn" href="/">Top</a>
+        ${caseStudyNavItems
+          .map(
+            (item) =>
+              `<a class="nav-link" href="/#${escapeHtml(item.id)}">${escapeHtml(item.label)}</a>`
+          )
+          .join("")}
+      </nav>
+
+      <div class="header-controls">
+        <button
+          class="theme-toggle"
+          type="button"
+          data-case-study-theme-toggle
+          aria-label="Toggle dark and light mode"
+          title="Toggle theme"
+        >
+          <span aria-hidden="true" data-theme-icon>☾</span>
+        </button>
+      </div>
+
+      <button
+        class="menu-toggle"
+        type="button"
+        data-case-study-menu-toggle
+        aria-label="Toggle navigation"
+        aria-expanded="false"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+`;
 
 const renderProjectPage = (project) => {
   const projectPath = buildProjectPath(project);
@@ -256,6 +340,7 @@ ${serializeJsonLd(breadcrumbJsonLd)}
     <link rel="stylesheet" crossorigin href="${escapeHtml(stylesheetHref)}" />
   </head>
   <body>
+    ${renderCaseStudyHeader()}
     <main class="page case-study-page">
       <div class="case-study-shell">
         <a class="back-link" href="/#projects">← Back to portfolio</a>
@@ -309,13 +394,14 @@ ${serializeJsonLd(breadcrumbJsonLd)}
             Available for cloud engineering, DevOps, platform, and SRE roles with hands-on ownership across delivery and operations.
           </p>
           <div class="hero-actions">
-            <a href="mailto:${escapeHtml(profile.email)}">Email</a>
-            <a href="tel:${escapeHtml(profile.phone)}">Call</a>
-            <a href="/#contact">Back to Contact Section</a>
+            <a href="/#contact">Open Contact Form</a>
+            <a href="${escapeHtml(profile.linkedin)}" target="_blank" rel="noreferrer">LinkedIn</a>
+            <a href="${escapeHtml(profile.resumeLabel)}" target="_blank" rel="noreferrer">Resume</a>
           </div>
         </section>
       </div>
     </main>
+    <script>${caseStudyHeaderScript}</script>
   </body>
 </html>
 `;

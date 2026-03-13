@@ -2,9 +2,9 @@ import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import {
   achievements,
   buildProjectPath,
-  certifications,
   education,
   experience,
+  featuredSkillsMarquee,
   galleryImages,
   highlights,
   orbitIcons,
@@ -911,6 +911,32 @@ const profileImageHeight = 1364;
 const inlineTechIconSize = 16;
 const skillPreviewIconSize = 20;
 const orbitIconSize = 36;
+const marqueeSkills = [...featuredSkillsMarquee, ...featuredSkillsMarquee];
+const contactFormInitialState = {
+  name: "",
+  email: "",
+  company: "",
+  message: ""
+};
+
+const buildContactMailtoHref = ({ name, email, company, message }) => {
+  const subjectParts = ["Portfolio enquiry"];
+  if (company.trim()) subjectParts.push(company.trim());
+
+  const body = [
+    `Name: ${name.trim()}`,
+    `Email: ${email.trim()}`,
+    company.trim() ? `Company: ${company.trim()}` : null,
+    "",
+    message.trim()
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  return `mailto:${profile.email}?subject=${encodeURIComponent(
+    subjectParts.join(" | ")
+  )}&body=${encodeURIComponent(body)}`;
+};
 
 const buildGalleryThumbPath = (src = "") => {
   if (typeof src !== "string") return src;
@@ -1062,6 +1088,7 @@ function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [projectFilter, setProjectFilter] = useState("All");
   const [skillQuery, setSkillQuery] = useState("");
+  const [contactForm, setContactForm] = useState(contactFormInitialState);
   const skillSearchInputRef = useRef(null);
   const deferredSkillQuery = useDeferredValue(skillQuery);
   const [openSkillGroups, setOpenSkillGroups] = useState(() => new Set());
@@ -1188,6 +1215,7 @@ function App() {
     trackClarityEvent(`hero_${toClarityToken(linkName)}_click`);
     setClarityTag("last_outbound_link", linkName);
     if (linkName === "resume") upgradeClaritySession("resume_interest");
+    if (linkName === "hire_me") upgradeClaritySession("contact_intent");
   };
 
   const handleContactLinkClick = (linkName) => {
@@ -1294,6 +1322,24 @@ function App() {
     trackClarityEvent(`cookie_consent_${toClarityToken(status)}_selected`);
   };
 
+  const handleContactFormChange = (event) => {
+    const { name, value } = event.target;
+    setContactForm((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleContactFormSubmit = (event) => {
+    event.preventDefault();
+
+    trackClarityEvent("contact_form_submitted");
+    setClarityTag("last_contact_channel", "contact_form");
+    upgradeClaritySession("contact_intent");
+
+    window.location.href = buildContactMailtoHref(contactForm);
+  };
+
   const activePhotoSources = activePhoto
     ? getOptimizedImageSources(activePhoto.src)
     : null;
@@ -1368,6 +1414,9 @@ function App() {
               <p className="meta strong">{profile.visaStatus}</p>
 
               <div className="hero-actions">
+                <a href="#contact" onClick={() => handleHeroLinkClick("hire_me")}>
+                  Hire Me
+                </a>
                 <a
                   href={profile.linkedin}
                   target="_blank"
@@ -1451,6 +1500,35 @@ function App() {
                 <span>{item.label}</span>
               </article>
             ))}
+          </div>
+        </section>
+
+        <section className="marquee-band reveal" aria-label="Featured skills">
+          <div className="marquee-band-label">
+            <span>Core stack</span>
+          </div>
+          <div className="marquee-shell">
+            <div className="marquee-track">
+              {marqueeSkills.map((skill, index) => (
+                <span
+                  className="marquee-item"
+                  key={`${skill.name}-${index}`}
+                  aria-hidden={index >= featuredSkillsMarquee.length}
+                >
+                  <img
+                    className="marquee-icon"
+                    src={skill.src}
+                    alt={index < featuredSkillsMarquee.length ? skill.name : ""}
+                    width={22}
+                    height={22}
+                    loading="lazy"
+                    decoding="async"
+                    onError={(event) => handleIconLoadError(event, skill.name)}
+                  />
+                  <span>{skill.name}</span>
+                </span>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -2017,15 +2095,6 @@ function App() {
         </section>
 
         <section className="block reveal">
-          <h2>Certifications</h2>
-          <ul className="plain-list">
-            {certifications.map((cert) => (
-              <li key={cert}>{cert}</li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="block reveal">
           <h2>Achievements</h2>
           <ul className="plain-list">
             {achievements.map((item) => (
@@ -2058,30 +2127,99 @@ function App() {
         </section>
 
         <section id="contact" className="block reveal contact">
-          <h2>Contact</h2>
-          <p>
-            Open to full-time opportunities, contract projects, and technical
-            collaborations.
-          </p>
-          <div className="hero-actions">
-            <a
-              href={`mailto:${profile.email}`}
-              onClick={() => handleContactLinkClick("email")}
-            >
-              Email
-            </a>
-            <a href={`tel:${profile.phone}`} onClick={() => handleContactLinkClick("call")}>
-              Call
-            </a>
-            <a
-              href={profile.linkedin}
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => handleContactLinkClick("linkedin")}
-            >
-              LinkedIn
-            </a>
+          <div className="contact-head">
+            <div>
+              <h2>Contact</h2>
+              <p>
+                Open to full-time opportunities, contract projects, and
+                technical collaborations.
+              </p>
+            </div>
+            <div className="contact-links">
+              <a
+                className="contact-link"
+                href={`tel:${profile.phone}`}
+                onClick={() => handleContactLinkClick("call")}
+              >
+                Call
+              </a>
+              <a
+                className="contact-link"
+                href={profile.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                onClick={() => handleContactLinkClick("linkedin")}
+              >
+                LinkedIn
+              </a>
+            </div>
           </div>
+
+          <form className="contact-form" onSubmit={handleContactFormSubmit}>
+            <div className="contact-form-grid">
+              <label className="contact-field" htmlFor="contact-name">
+                <span>Name</span>
+                <input
+                  id="contact-name"
+                  name="name"
+                  type="text"
+                  value={contactForm.name}
+                  onChange={handleContactFormChange}
+                  autoComplete="name"
+                  required
+                />
+              </label>
+
+              <label className="contact-field" htmlFor="contact-email">
+                <span>Email</span>
+                <input
+                  id="contact-email"
+                  name="email"
+                  type="email"
+                  value={contactForm.email}
+                  onChange={handleContactFormChange}
+                  autoComplete="email"
+                  required
+                />
+              </label>
+
+              <label className="contact-field" htmlFor="contact-company">
+                <span>Company</span>
+                <input
+                  id="contact-company"
+                  name="company"
+                  type="text"
+                  value={contactForm.company}
+                  onChange={handleContactFormChange}
+                  autoComplete="organization"
+                  placeholder="Optional"
+                />
+              </label>
+
+              <label className="contact-field contact-field-full" htmlFor="contact-message">
+                <span>Message</span>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  value={contactForm.message}
+                  onChange={handleContactFormChange}
+                  rows={6}
+                  placeholder="Tell me about the role, project, or problem you want help with."
+                  required
+                />
+              </label>
+            </div>
+
+            <div className="contact-form-footer">
+              <p className="contact-helper">
+                Submitting opens your default email app with the message
+                prefilled.
+              </p>
+              <button type="submit" className="contact-submit">
+                Send Enquiry
+              </button>
+            </div>
+          </form>
         </section>
       </main>
 
