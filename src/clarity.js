@@ -4,6 +4,7 @@ const VISITOR_ID_STORAGE_KEY = "clarity-custom-id";
 const SESSION_ID_STORAGE_KEY = "clarity-custom-session-id";
 const CLARITY_IDLE_TIMEOUT_MS = 2000;
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
+export const ANALYTICS_CONSENT_EVENT = "portfolio:analytics-consent-changed";
 
 const consentProfiles = {
   granted: { ad_Storage: "granted", analytics_Storage: "granted" },
@@ -13,8 +14,8 @@ const consentProfiles = {
 const isBrowser = () => typeof window !== "undefined";
 const isClarityRuntimeEnabled = () => {
   if (!isBrowser()) return false;
-  if (import.meta.env.VITE_ENABLE_CLARITY === "true") return true;
   if (!import.meta.env.PROD) return false;
+  if (import.meta.env.VITE_ENABLE_CLARITY !== "true") return false;
   return !LOCAL_HOSTS.has(window.location.hostname);
 };
 
@@ -43,6 +44,17 @@ const readStoredConsent = () => {
     stored = null;
   }
   return stored === "granted" || stored === "denied" ? stored : null;
+};
+
+const hasGrantedConsent = () => readStoredConsent() === "granted";
+
+const notifyConsentChange = (status) => {
+  if (!isBrowser()) return;
+  window.dispatchEvent(
+    new CustomEvent(ANALYTICS_CONSENT_EVENT, {
+      detail: { status }
+    })
+  );
 };
 
 const getOrCreateStorageId = (storage, key, prefix) => {
@@ -82,7 +94,7 @@ const scheduleInIdle = (callback) => {
 };
 
 function requestFlush() {
-  if (!isClarityRuntimeEnabled() || flushScheduled) return;
+  if (!isClarityRuntimeEnabled() || !hasGrantedConsent() || flushScheduled) return;
   flushScheduled = true;
 
   const runFlush = () => scheduleInIdle(() => void flushPendingOperations());
@@ -108,7 +120,7 @@ const loadClarityApi = async () => {
 };
 
 const ensureClarityInitialized = async () => {
-  if (!isClarityRuntimeEnabled()) return null;
+  if (!isClarityRuntimeEnabled() || !hasGrantedConsent()) return null;
   const loadedApi = await loadClarityApi();
   if (!loadedApi) return null;
 
@@ -123,7 +135,7 @@ const ensureClarityInitialized = async () => {
 };
 
 const flushPendingOperations = async () => {
-  if (!isClarityRuntimeEnabled() || flushing) return;
+  if (!isClarityRuntimeEnabled() || !hasGrantedConsent() || flushing) return;
   flushing = true;
   flushScheduled = false;
 
@@ -147,7 +159,7 @@ const flushPendingOperations = async () => {
 };
 
 const enqueueOperation = (operation) => {
-  if (!isClarityRuntimeEnabled()) return;
+  if (!isClarityRuntimeEnabled() || !hasGrantedConsent()) return;
   pendingOperations.push(operation);
   requestFlush();
 };
@@ -162,6 +174,7 @@ export const getClarityConsentStatus = () => readStoredConsent();
 
 export const initializeClarity = () => {
   if (!isClarityRuntimeEnabled()) return;
+  if (!hasGrantedConsent()) return;
   if (initRequested) return;
   initRequested = true;
 
@@ -169,9 +182,10 @@ export const initializeClarity = () => {
   setClarityTag("site", "darshan-portfolio");
   setClarityTag("page_type", "portfolio");
   setClarityTag("runtime_env", import.meta.env.PROD ? "production" : "development");
-
-  const consentStatus = readStoredConsent();
-  if (consentStatus) setClarityConsentStatus(consentStatus);
+  enqueueOperation((api) => {
+    api.consentV2(consentProfiles.granted);
+  });
+  setClarityTag("cookie_consent", "granted");
 };
 
 export const identifyVisitor = (friendlyName = "visitor", pageId = toPageId()) => {
@@ -235,8 +249,22 @@ export const setClarityConsentStatus = (status) => {
   } catch {
     // Ignore storage errors in restricted browsing contexts.
   }
-  enqueueOperation((api) => {
-    api.consentV2(consentProfiles[status]);
-  });
-  setClarityTag("cookie_consent", status);
+  notifyConsentChange(status);
+
+  if (status === "granted") {
+    initializeClarity();
+    enqueueOperation((api) => {
+      api.consentV2(consentProfiles.granted);
+    });
+    setClarityTag("cookie_consent", "granted");
+    return;
+  }
+
+  pendingOperations = [];
+  if (clarityApi) {
+    safeCall(() => {
+      clarityApi.consentV2(consentProfiles.denied);
+      clarityApi.setTag("cookie_consent", "denied");
+    });
+  }
 };

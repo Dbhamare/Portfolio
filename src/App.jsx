@@ -1067,9 +1067,8 @@ function App() {
   const [openSkillGroups, setOpenSkillGroups] = useState(() => new Set());
   const [theme, setTheme] = useState(() => readPreferredTheme());
   const [activePhoto, setActivePhoto] = useState(null);
-  const [clarityConsent, setClarityConsent] = useState(() =>
-    getClarityConsentStatus()
-  );
+  const [clarityConsent, setClarityConsent] = useState(undefined);
+  const [hasResolvedConsent, setHasResolvedConsent] = useState(false);
 
   const categories = useMemo(
     () => ["All", ...new Set(projects.map((item) => item.category))],
@@ -1134,8 +1133,14 @@ function App() {
   }, [projectFilter]);
 
   useEffect(() => {
+    setClarityConsent(getClarityConsentStatus());
+    setHasResolvedConsent(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasResolvedConsent) return;
     syncGoogleAnalyticsConsent(clarityConsent || "denied");
-  }, [clarityConsent]);
+  }, [clarityConsent, hasResolvedConsent]);
 
   useEffect(() => {
     if (!activePhoto) return undefined;
@@ -2080,11 +2085,12 @@ function App() {
         </section>
       </main>
 
-      {!clarityConsent && (
+      {hasResolvedConsent && !clarityConsent && (
         <aside className="cookie-consent" role="dialog" aria-live="polite">
           <p>
-            We use Clarity and Google Analytics cookies to improve the portfolio
-            experience. You can accept or decline analytics tracking.
+            We use Clarity, Vercel Web Analytics, and Google Analytics cookies
+            to improve the portfolio experience. You can accept or decline
+            analytics tracking.
           </p>
           <div className="cookie-consent-actions">
             <button type="button" onClick={() => handleConsentChoice("granted")}>
