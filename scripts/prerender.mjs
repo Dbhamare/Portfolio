@@ -234,7 +234,7 @@ const renderProjectPage = (project) => {
   const focusAreas = inferFocusAreas(project);
   const projectHighlights = getProjectHighlights(project);
   const websiteUrl = buildAbsoluteUrl("/");
-  const socialImageUrl = buildAbsoluteUrl("/social-preview.jpg");
+  const socialImageUrl = buildAbsoluteUrl("/social-preview-v2.jpg");
 
   const creativeWorkJsonLd = {
     "@context": "https://schema.org",
