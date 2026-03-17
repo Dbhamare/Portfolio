@@ -45,6 +45,13 @@ const emphasisRegex =
 const isEmphasisToken =
   /^(AWS|Azure|Kubernetes|Terraform|Ansible|Jenkins|GitHub(?: Actions)?|CloudWatch|EKS|AKS|MSK|MongoDB|ElasticSearch|Docker|Helm|IBM IKS|CI\/CD|IAM|WAF|NACLs?|Security Groups?|Load Balancing|Auto Scaling|Linux|Windows|Nagios|Prometheus|Grafana|Datadog|Loki|\d+%|2 weeks|3 days)$/i;
 
+const profileInitials = profile.name
+  .split(/\s+/)
+  .filter(Boolean)
+  .slice(0, 2)
+  .map((part) => part[0]?.toUpperCase() || "")
+  .join("");
+
 const techIconLibrary = [
   {
     id: "aws",
@@ -1094,6 +1101,7 @@ function App() {
   const [openSkillGroups, setOpenSkillGroups] = useState(() => new Set());
   const [theme, setTheme] = useState(() => readPreferredTheme());
   const [activePhoto, setActivePhoto] = useState(null);
+  const [hasHydratedHeroAvatar, setHasHydratedHeroAvatar] = useState(false);
   const [clarityConsent, setClarityConsent] = useState(undefined);
   const [hasResolvedConsent, setHasResolvedConsent] = useState(false);
 
@@ -1162,6 +1170,10 @@ function App() {
   useEffect(() => {
     setClarityConsent(getClarityConsentStatus());
     setHasResolvedConsent(true);
+  }, []);
+
+  useEffect(() => {
+    setHasHydratedHeroAvatar(true);
   }, []);
 
   useEffect(() => {
@@ -1450,25 +1462,34 @@ function App() {
                 }
                 aria-label="Open full profile photo"
               >
-                <div className="avatar-frame">
-                  <picture>
-                    {profile.avatarAvif && (
-                      <source srcSet={profile.avatarAvif} type="image/avif" />
-                    )}
-                    {profile.avatarWebp && (
-                      <source srcSet={profile.avatarWebp} type="image/webp" />
-                    )}
-                    <img
-                      className="avatar"
-                      src={profile.avatar}
-                      alt={profile.name}
-                      width={profileImageWidth}
-                      height={profileImageHeight}
-                      loading="eager"
-                      decoding="async"
-                      fetchpriority="high"
-                    />
-                  </picture>
+                <div
+                  className={`avatar-frame${
+                    hasHydratedHeroAvatar ? "" : " avatar-frame--placeholder"
+                  }`}
+                >
+                  {hasHydratedHeroAvatar ? (
+                    <picture>
+                      {profile.avatarAvif && (
+                        <source srcSet={profile.avatarAvif} type="image/avif" />
+                      )}
+                      {profile.avatarWebp && (
+                        <source srcSet={profile.avatarWebp} type="image/webp" />
+                      )}
+                      <img
+                        className="avatar"
+                        src={profile.avatar}
+                        alt={profile.name}
+                        width={profileImageWidth}
+                        height={profileImageHeight}
+                        loading="eager"
+                        decoding="async"
+                      />
+                    </picture>
+                  ) : (
+                    <span className="avatar-placeholder" aria-hidden="true">
+                      {profileInitials}
+                    </span>
+                  )}
                 </div>
                 <span className="avatar-hint">Click to enlarge</span>
               </button>
