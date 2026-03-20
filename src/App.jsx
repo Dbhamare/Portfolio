@@ -1439,11 +1439,10 @@ function App() {
                 </a>
                 <a
                   href={profile.resumeLabel}
-                  target="_blank"
-                  rel="noreferrer"
+                  download
                   onClick={() => handleHeroLinkClick("resume")}
                 >
-                  Resume
+                  Download CV
                 </a>
               </div>
             </div>
