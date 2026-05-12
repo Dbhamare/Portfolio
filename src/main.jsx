@@ -8,6 +8,7 @@ import {
   initializeClarity
 } from "./clarity";
 import "./styles.css";
+import { ReactLenis } from 'lenis/react';
 
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
 
@@ -47,7 +48,9 @@ function AnalyticsGate() {
 const rootElement = document.getElementById("root");
 const app = (
   <React.StrictMode>
-    <App />
+    <ReactLenis root>
+      <App />
+    </ReactLenis>
     <AnalyticsGate />
   </React.StrictMode>
 );

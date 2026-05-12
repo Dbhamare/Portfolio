@@ -2288,3 +2288,96 @@ p {
     scroll-behavior: auto !important;
   }
 }
+
+/* --- PREMIUM ANIMATION OVERRIDES --- */
+
+/* Project Card Hover */
+.project-card {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.6s ease;
+  overflow: hidden;
+}
+.project-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  background-color: rgba(255,255,255,0.06);
+}
+
+/* Gallery Hover Image Scale */
+.gallery-strip-item {
+  overflow: hidden;
+}
+.gallery-strip-item img, .gallery-strip-item picture {
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s ease;
+}
+.gallery-strip-item:hover img, .gallery-strip-item:hover picture {
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
+
+/* Timeline/Education Card Hover */
+.timeline-card {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.timeline-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+/* Button & Chip interactions */
+.chip, .hero-actions a, .contact-submit {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.chip:hover, .hero-actions a:hover, .contact-submit:hover {
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* Disable native cursor on links since we have a custom one */
+a, button, input, textarea, select {
+  cursor: none !important;
+}
+body {
+  cursor: none !important;
+}
+
+/* Hide default reveal classes if framer motion handles it */
+.reveal {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Smooth Image Scale */
+.avatar-frame {
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.avatar-trigger:hover .avatar-frame {
+  transform: scale(1.05);
+}
+
+/* Make nav items have stagger reveals natively using css or wait framer handles it */
+
+/* --- USER REQUESTED OVERRIDES --- */
+
+/* Hide default scrollbars globally */
+::-webkit-scrollbar {
+  display: none;
+}
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Expand gallery photos to fill screen */
+.gallery-strip {
+  height: 75vh !important;
+}
+
+/* Increase view window opaqueness and size */
+.photo-modal {
+  background: rgba(0, 0, 0, 0.98) !important;
+  backdrop-filter: blur(8px);
+}
+.photo-preview {
+  max-width: 95vw !important;
+  max-height: 95vh !important;
+  object-fit: contain;
+}

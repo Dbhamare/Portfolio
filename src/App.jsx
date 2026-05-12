@@ -1,4 +1,6 @@
-import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import React, { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import { Preloader, CustomCursor, Reveal, StaggerText, FadeIn, ParallaxImage, ImageReveal, ExpandCollapse } from "./animations";
+import { AnimatePresence } from "framer-motion";
 import {
   achievements,
   buildProjectPath,
@@ -32,6 +34,19 @@ const navItems = [
   { id: "gallery", label: "Gallery" },
   { id: "contact", label: "Contact" }
 ];
+
+const AnimatedMain = ({ children }) => {
+  return (
+    <main>
+      {React.Children.map(children, (child) => {
+        if (React.isValidElement(child) && child.type === "section") {
+          return <Reveal y={60} delay={0.1}>{child}</Reveal>;
+        }
+        return child;
+      })}
+    </main>
+  );
+};
 
 const toClarityToken = (value = "") =>
   String(value)
@@ -997,6 +1012,7 @@ const GalleryImageCard = ({ image, onOpenPhoto }) => {
   const thumbSources = getOptimizedImageSources(buildGalleryThumbPath(image.src));
 
   return (
+    <ImageReveal>
     <figure className="gallery-card gallery-card--single">
       <picture>
         {(thumbSources.avif || fullSources.avif) && (
@@ -1024,10 +1040,12 @@ const GalleryImageCard = ({ image, onOpenPhoto }) => {
       </picture>
       <GalleryOverlay title={image.title} description={image.description} />
     </figure>
+    </ImageReveal>
   );
 };
 
 const GalleryCollageCard = ({ item, onOpenPhoto }) => (
+  <ImageReveal>
   <figure className="gallery-card gallery-card--collage">
     <div className="gallery-card-content gallery-collage-grid">
       {item.images.map((photo, index) => {
@@ -1066,6 +1084,7 @@ const GalleryCollageCard = ({ item, onOpenPhoto }) => (
     </div>
     <GalleryOverlay title={item.title} description={item.description} />
   </figure>
+  </ImageReveal>
 );
 
 const defaultTheme = "light";
@@ -1092,6 +1111,7 @@ const readPreferredTheme = () => {
 };
 
 function App() {
+  const [loading, setLoading] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [projectFilter, setProjectFilter] = useState("All");
   const [skillQuery, setSkillQuery] = useState("");
@@ -1368,8 +1388,13 @@ function App() {
   };
 
   return (
-    <div className="page">
-      <header className="site-header">
+    <>
+      <AnimatePresence>
+        {loading && <Preloader onComplete={() => setLoading(false)} />}
+      </AnimatePresence>
+      <CustomCursor />
+      <div className="page" style={{ opacity: loading ? 0 : 1, transition: "opacity 0.8s ease" }}>
+        <header className="site-header">
         <nav className={`nav ${mobileOpen ? "open" : ""}`}>
           <button type="button" className="nav-link nav-btn" onClick={goToTop}>
             Top
@@ -1412,20 +1437,21 @@ function App() {
         </button>
       </header>
 
-      <main>
+      <AnimatedMain>
         <section className="hero reveal">
           <div className="hero-grid">
             <div className="hero-copy-pane">
               <div className="hero-top-row">
-                <p className="role-line">{profile.role}</p>
-                <span className="availability-badge">{profile.location}</span>
+                <FadeIn delay={0.2}><p className="role-line">{profile.role}</p></FadeIn>
+                <FadeIn delay={0.3}><span className="availability-badge">{profile.location}</span></FadeIn>
               </div>
 
-              <h1>{profile.name}</h1>
-              <p className="hero-copy">{profile.headline}</p>
-              <p className="meta strong">{profile.visaStatus}</p>
+              <h1><StaggerText text={profile.name} /></h1>
+              <FadeIn delay={0.4}><p className="hero-copy">{profile.headline}</p></FadeIn>
+              <FadeIn delay={0.5}><p className="meta strong">{profile.visaStatus}</p></FadeIn>
 
               <div className="hero-actions">
+                <FadeIn delay={0.6}>
                 <a href="#contact" onClick={() => handleHeroLinkClick("hire_me")}>
                   Hire Me
                 </a>
@@ -1444,10 +1470,11 @@ function App() {
                 >
                   Download CV
                 </a>
+                </FadeIn>
               </div>
             </div>
 
-            <div className="hero-photo-wrap">
+            <div className="hero-photo-wrap" style={{ perspective: "1000px" }}>
               <button
                 type="button"
                 className="avatar-trigger"
@@ -1461,6 +1488,7 @@ function App() {
                 }
                 aria-label="Open full profile photo"
               >
+                <ImageReveal>
                 <div
                   className={`avatar-frame${
                     hasHydratedHeroAvatar ? "" : " avatar-frame--placeholder"
@@ -1490,6 +1518,7 @@ function App() {
                     </span>
                   )}
                 </div>
+                </ImageReveal>
                 <span className="avatar-hint">Click to enlarge</span>
               </button>
 
@@ -1553,7 +1582,7 @@ function App() {
         </section>
 
         <section id="about" className="block reveal">
-          <h2>About</h2>
+          <h2><StaggerText text="About" /></h2>
           <p>
             I am a Cloud Operations and DevOps Engineer with hands-on
             experience designing, automating, and operating resilient
@@ -1566,7 +1595,7 @@ function App() {
         </section>
 
         <section id="skills" className="block reveal">
-          <h2>Skills Directory</h2>
+          <h2><StaggerText text="Skills Directory" /></h2>
           <p className="section-intro">
             Browse categories and expand each section to see the complete tool
             stack.
@@ -1661,8 +1690,7 @@ function App() {
                         </span>
                       </button>
 
-                      {isOpen && (
-                        <div className="skill-items open">
+                      <ExpandCollapse isOpen={isOpen} className="skill-items open">
                           {group.items.map((item) => {
                             const displayLabel = toSkillDisplayLabel(item);
                             const icon = findTechIcon(displayLabel);
@@ -1688,8 +1716,7 @@ function App() {
                               </span>
                             );
                           })}
-                        </div>
-                      )}
+                      </ExpandCollapse>
                     </article>
                   );
                 })}
@@ -1699,7 +1726,7 @@ function App() {
         </section>
 
         <section id="experience" className="block reveal">
-          <h2>Experience</h2>
+          <h2><StaggerText text="Experience" /></h2>
           <div className="timeline">
             {experience.map((item) => (
               <article className="timeline-card" key={item.company + item.title}>
@@ -1721,7 +1748,7 @@ function App() {
         </section>
 
         <section id="architecture" className="block reveal">
-          <h2>Infrastructure Architecture</h2>
+          <h2><StaggerText text="Infrastructure Architecture" /></h2>
           <p className="section-intro">
             High-availability AWS reference architecture for secure, scalable,
             and observable microservices in production.
@@ -2028,7 +2055,7 @@ function App() {
 
         <section id="projects" className="block reveal">
           <div className="section-head">
-            <h2>Projects</h2>
+            <h2><StaggerText text="Projects" /></h2>
             <div className="filters">
               {categories.map((category) => (
                 <button
@@ -2101,7 +2128,7 @@ function App() {
         </section>
 
         <section id="education" className="block reveal">
-          <h2>Education</h2>
+          <h2><StaggerText text="Education" /></h2>
           <div className="timeline">
             {education.map((item) => (
               <article className="timeline-card" key={item.degree}>
@@ -2115,7 +2142,7 @@ function App() {
         </section>
 
         <section className="block reveal">
-          <h2>Achievements</h2>
+          <h2><StaggerText text="Achievements" /></h2>
           <ul className="plain-list">
             {achievements.map((item) => (
               <li key={item}>{item}</li>
@@ -2124,7 +2151,7 @@ function App() {
         </section>
 
         <section id="gallery" className="block reveal gallery-section">
-          <h2>Beyond Work</h2>
+          <h2><StaggerText text="Beyond Work" /></h2>
           <p className="section-intro">
             A quick snapshot of moments outside engineering (Click to view the photos).
           </p>
@@ -2149,7 +2176,7 @@ function App() {
         <section id="contact" className="block reveal contact">
           <div className="contact-head">
             <div>
-              <h2>Contact</h2>
+              <h2><StaggerText text="Contact" /></h2>
               <p>
                 Open to full-time opportunities, contract projects, and
                 technical collaborations.
@@ -2241,7 +2268,7 @@ function App() {
             </div>
           </form>
         </section>
-      </main>
+      </AnimatedMain>
 
       {hasResolvedConsent && !clarityConsent && (
         <aside className="cookie-consent" role="dialog" aria-live="polite">
@@ -2302,6 +2329,7 @@ function App() {
         </div>
       )}
     </div>
+    </>
   );
 }
 
