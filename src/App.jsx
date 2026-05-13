@@ -2106,6 +2106,7 @@ function App() {
                 )}
                 <div className="project-card-actions">
                   <a
+                    className="project-action project-action-primary"
                     href={buildProjectPath(item)}
                     onClick={() => handleProjectClick(item.name)}
                   >
@@ -2113,12 +2114,13 @@ function App() {
                   </a>
                   {item.link && (
                     <a
+                      className="project-action project-action-secondary"
                       href={item.link}
                       target="_blank"
                       rel="noreferrer"
                       onClick={() => handleProjectClick(item.name)}
                     >
-                      Live Project
+                      {item.linkLabel || "Live Project"}
                     </a>
                   )}
                 </div>

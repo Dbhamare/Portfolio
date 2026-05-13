@@ -80,6 +80,426 @@ const caseStudyHeaderScript = `(() => {
   });
 })();`;
 
+const caseStudyMotionStyles = `
+      .case-study-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 1.25rem;
+        color: #fff;
+        background: #050505;
+        transform: translateY(0);
+        opacity: 1;
+        transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.45s ease;
+      }
+
+      .case-study-loader.is-complete {
+        transform: translateY(-100%);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .case-study-loader-title {
+        font-size: clamp(2.35rem, 9vw, 4rem);
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .case-study-loader-track {
+        width: min(220px, 46vw);
+        height: 2px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .case-study-loader-fill {
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.08s linear;
+      }
+
+      body,
+      a,
+      button,
+      input,
+      textarea,
+      select {
+        cursor: auto !important;
+      }
+
+      body.case-study-motion-ready,
+      body.case-study-motion-ready a,
+      body.case-study-motion-ready button,
+      body.case-study-motion-ready input,
+      body.case-study-motion-ready textarea,
+      body.case-study-motion-ready select {
+        cursor: none !important;
+      }
+
+      .case-study-cursor {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10000;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        pointer-events: none;
+        opacity: 0;
+        mix-blend-mode: difference;
+        background: var(--case-cursor-bg, rgba(40, 217, 173, 0.8));
+        transform: translate3d(var(--case-cursor-x, -50px), var(--case-cursor-y, -50px), 0) translate(-50%, -50%) scale(var(--case-cursor-scale, 1));
+        transition: opacity 0.2s ease, background-color 0.2s ease;
+      }
+
+      body.case-study-motion-ready .case-study-cursor {
+        opacity: 1;
+      }
+
+      .case-study-animate {
+        opacity: 0;
+        transform: translateY(58px);
+        transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+        transition-delay: var(--case-motion-delay, 0s);
+        will-change: opacity, transform;
+      }
+
+      .case-study-animate.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .case-study-title {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .case-study-title-word {
+        display: inline-block;
+        overflow: hidden;
+        padding-bottom: 0.1em;
+      }
+
+      .case-study-title-word span {
+        display: inline-block;
+        transform: translateY(108%);
+        transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+        transition-delay: var(--case-word-delay, 0s);
+      }
+
+      .is-visible .case-study-title-word span {
+        transform: translateY(0);
+      }
+
+      [data-case-study-stagger] > .case-study-stagger-item {
+        opacity: 0;
+        transform: translateY(16px);
+        transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.76, 0, 0.24, 1);
+        transition-delay: var(--case-stagger-delay, 0s);
+      }
+
+      [data-case-study-stagger].is-visible > .case-study-stagger-item {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (pointer: coarse) {
+        .case-study-cursor {
+          display: none;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .case-study-loader,
+        .case-study-cursor {
+          display: none;
+        }
+
+        .case-study-animate,
+        [data-case-study-stagger] > .case-study-stagger-item,
+        .case-study-title-word span {
+          opacity: 1;
+          transform: none;
+          transition: none;
+        }
+      }
+`;
+
+const caseStudyMotionScript = `(() => {
+  const body = document.body;
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = window.matchMedia("(pointer: fine)").matches;
+  const loader = document.querySelector("[data-case-study-loader]");
+  const loaderValue = document.querySelector("[data-case-study-loader-value]");
+  const loaderFill = document.querySelector("[data-case-study-loader-fill]");
+
+  const showAllMotionTargets = () => {
+    document
+      .querySelectorAll("[data-case-study-animate], [data-case-study-stagger]")
+      .forEach((element) => element.classList.add("is-visible"));
+  };
+
+  document.querySelectorAll("[data-case-study-animate]").forEach((element) => {
+    const delay = Number(element.getAttribute("data-case-study-delay") || 0);
+    element.classList.add("case-study-animate");
+    element.style.setProperty("--case-motion-delay", delay.toFixed(2) + "s");
+  });
+
+  document.querySelectorAll(".case-study-title-word span").forEach((element, index) => {
+    element.style.setProperty("--case-word-delay", (0.1 + index * 0.04).toFixed(2) + "s");
+  });
+
+  document.querySelectorAll("[data-case-study-stagger]").forEach((container) => {
+    Array.from(container.children).forEach((item, index) => {
+      item.classList.add("case-study-stagger-item");
+      item.style.setProperty("--case-stagger-delay", (0.1 + index * 0.055).toFixed(3) + "s");
+    });
+  });
+
+  if (prefersReducedMotion) {
+    showAllMotionTargets();
+    loader?.remove();
+    return;
+  }
+
+  let progress = 0;
+  let pageLoaded = document.readyState === "complete";
+
+  const setLoaderProgress = (nextProgress) => {
+    progress = Math.max(progress, Math.min(100, nextProgress));
+    if (loaderValue) loaderValue.textContent = String(Math.round(progress));
+    if (loaderFill) loaderFill.style.transform = "scaleX(" + progress / 100 + ")";
+  };
+
+  const completeLoader = () => {
+    if (!loader || loader.classList.contains("is-complete")) return;
+    setLoaderProgress(100);
+    loader.classList.add("is-complete");
+    window.setTimeout(() => loader.remove(), 900);
+  };
+
+  if (loader) {
+    const loaderTimer = window.setInterval(() => {
+      const ceiling = pageLoaded ? 100 : 88;
+      setLoaderProgress(Math.min(ceiling, progress + Math.random() * 9 + 3));
+      if (progress >= 100) {
+        window.clearInterval(loaderTimer);
+        window.setTimeout(completeLoader, 220);
+      }
+    }, 48);
+
+    const markLoaded = () => {
+      pageLoaded = true;
+      window.setTimeout(() => {
+        window.clearInterval(loaderTimer);
+        completeLoader();
+      }, 360);
+    };
+
+    if (pageLoaded) {
+      markLoaded();
+    } else {
+      window.addEventListener("load", markLoaded, { once: true });
+    }
+  }
+
+  const staggerContainers = Array.from(document.querySelectorAll("[data-case-study-stagger]"));
+  const revealTargets = Array.from(
+    new Set([
+      ...document.querySelectorAll("[data-case-study-animate]"),
+      ...staggerContainers
+    ])
+  );
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          entry.target.classList.toggle("is-visible", entry.isIntersecting);
+        });
+      },
+      {
+        threshold: 0.12,
+        rootMargin: "0px 0px -8% 0px"
+      }
+    );
+
+    revealTargets.forEach((target) => observer.observe(target));
+  } else {
+    showAllMotionTargets();
+  }
+
+  const cursor = document.querySelector("[data-case-study-cursor]");
+
+  if (cursor && finePointer) {
+    body.classList.add("case-study-motion-ready");
+
+    const pointer = {
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+      scale: 1
+    };
+    const rendered = {
+      x: pointer.x,
+      y: pointer.y,
+      scale: pointer.scale
+    };
+
+    const setHoverState = (isHovered) => {
+      pointer.scale = isHovered ? 2.5 : 1;
+      cursor.style.setProperty(
+        "--case-cursor-bg",
+        isHovered ? "rgba(255, 255, 255, 1)" : "rgba(40, 217, 173, 0.8)"
+      );
+    };
+
+    const animateCursor = () => {
+      rendered.x += (pointer.x - rendered.x) * 0.24;
+      rendered.y += (pointer.y - rendered.y) * 0.24;
+      rendered.scale += (pointer.scale - rendered.scale) * 0.2;
+      cursor.style.setProperty("--case-cursor-x", rendered.x.toFixed(2) + "px");
+      cursor.style.setProperty("--case-cursor-y", rendered.y.toFixed(2) + "px");
+      cursor.style.setProperty("--case-cursor-scale", rendered.scale.toFixed(3));
+      window.requestAnimationFrame(animateCursor);
+    };
+
+    window.addEventListener("mousemove", (event) => {
+      pointer.x = event.clientX;
+      pointer.y = event.clientY;
+    });
+
+    window.addEventListener("mouseover", (event) => {
+      setHoverState(Boolean(event.target.closest("a, button, .chip, .case-study-panel")));
+    });
+
+    document.addEventListener("mouseleave", () => {
+      cursor.style.opacity = "0";
+    });
+
+    document.addEventListener("mouseenter", () => {
+      cursor.style.opacity = "";
+    });
+
+    animateCursor();
+  }
+
+  const shouldSmoothScroll = finePointer && !prefersReducedMotion;
+
+  if (shouldSmoothScroll) {
+    let currentScroll = window.scrollY;
+    let targetScroll = currentScroll;
+    let isAnimatingScroll = false;
+
+    const maxScroll = () =>
+      Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    const clampScroll = (value) => Math.min(Math.max(value, 0), maxScroll());
+
+    const animateScroll = () => {
+      isAnimatingScroll = true;
+      currentScroll += (targetScroll - currentScroll) * 0.12;
+
+      if (Math.abs(targetScroll - currentScroll) < 0.5) {
+        currentScroll = targetScroll;
+        window.scrollTo(0, currentScroll);
+        isAnimatingScroll = false;
+        return;
+      }
+
+      window.scrollTo(0, currentScroll);
+      window.requestAnimationFrame(animateScroll);
+    };
+
+    const startSmoothScroll = () => {
+      if (!isAnimatingScroll) {
+        window.requestAnimationFrame(animateScroll);
+      }
+    };
+
+    window.addEventListener(
+      "wheel",
+      (event) => {
+        if (event.ctrlKey || event.metaKey) return;
+        event.preventDefault();
+        targetScroll = clampScroll(targetScroll + event.deltaY);
+        startSmoothScroll();
+      },
+      { passive: false }
+    );
+
+    window.addEventListener(
+      "keydown",
+      (event) => {
+        const activeTag = document.activeElement?.tagName;
+        if (/INPUT|TEXTAREA|SELECT/.test(activeTag || "")) return;
+
+        const viewportStep = window.innerHeight * 0.86;
+        const keySteps = {
+          ArrowDown: 92,
+          ArrowUp: -92,
+          PageDown: viewportStep,
+          PageUp: -viewportStep,
+          Home: -Infinity,
+          End: Infinity,
+          " ": event.shiftKey ? -viewportStep : viewportStep
+        };
+
+        if (!(event.key in keySteps)) return;
+        event.preventDefault();
+
+        const step = keySteps[event.key];
+        if (step === Infinity) {
+          targetScroll = maxScroll();
+        } else if (step === -Infinity) {
+          targetScroll = 0;
+        } else {
+          targetScroll = clampScroll((isAnimatingScroll ? targetScroll : window.scrollY) + step);
+        }
+
+        currentScroll = window.scrollY;
+        startSmoothScroll();
+      },
+      { passive: false }
+    );
+
+    document.addEventListener("click", (event) => {
+      const link = event.target.closest("a[href^='#']");
+      if (!link) return;
+
+      const id = link.getAttribute("href").slice(1);
+      const target = id ? document.getElementById(id) : document.body;
+      if (!target) return;
+
+      event.preventDefault();
+      currentScroll = window.scrollY;
+      targetScroll = clampScroll(target.getBoundingClientRect().top + window.scrollY - 88);
+      startSmoothScroll();
+    });
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!isAnimatingScroll) {
+          currentScroll = window.scrollY;
+          targetScroll = currentScroll;
+        }
+      },
+      { passive: true }
+    );
+
+    window.addEventListener("resize", () => {
+      targetScroll = clampScroll(targetScroll);
+    });
+  }
+})();`;
+
 const [{ render }, template] = await Promise.all([
   import(pathToFileURL(serverEntryPath).href),
   readFile(distIndexPath, "utf8")
@@ -89,15 +509,9 @@ if (typeof render !== "function") {
   throw new Error(`Expected a render() export from ${serverEntryPath}`);
 }
 
-if (!template.includes(rootMarker)) {
-  throw new Error(`Expected ${rootMarker} in ${distIndexPath}`);
-}
-
-const appHtml = render();
-const prerenderedHomeHtml = template.replace(
-  rootMarker,
-  `<div id="root">${appHtml}</div>`
-);
+const prerenderedHomeHtml = template.includes(rootMarker)
+  ? template.replace(rootMarker, `<div id="root">${render()}</div>`)
+  : template;
 
 const stylesheetHref = prerenderedHomeHtml.match(
   /<link rel="stylesheet" crossorigin href="([^"]+)">/
@@ -178,6 +592,16 @@ const renderChips = (items) =>
 const renderListItems = (items) =>
   items.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
 
+const renderStaggeredWords = (value = "") =>
+  value
+    .split(/\s+/)
+    .filter(Boolean)
+    .map(
+      (word) =>
+        `<span class="case-study-title-word"><span>${escapeHtml(word)}&nbsp;</span></span>`
+    )
+    .join("");
+
 const renderCaseStudyHeader = () => `
     <header class="site-header">
       <nav class="nav" data-case-study-nav>
@@ -235,6 +659,11 @@ const renderProjectPage = (project) => {
   const projectHighlights = getProjectHighlights(project);
   const websiteUrl = buildAbsoluteUrl("/");
   const socialImageUrl = buildAbsoluteUrl("/social-preview-v2.jpg");
+  const platformAction = project.link
+    ? `<a href="${escapeHtml(project.link)}" target="_blank" rel="noreferrer">${escapeHtml(
+        project.linkLabel || "Visit Platform"
+      )}</a>`
+    : "";
 
   const creativeWorkJsonLd = {
     "@context": "https://schema.org",
@@ -338,30 +767,41 @@ ${serializeJsonLd(creativeWorkJsonLd)}
 ${serializeJsonLd(breadcrumbJsonLd)}
     </script>
     <link rel="stylesheet" crossorigin href="${escapeHtml(stylesheetHref)}" />
+    <style>
+${caseStudyMotionStyles}
+    </style>
   </head>
   <body>
+    <div class="case-study-loader" data-case-study-loader aria-hidden="true">
+      <div class="case-study-loader-title">Loading <span data-case-study-loader-value>0</span>%</div>
+      <div class="case-study-loader-track">
+        <div class="case-study-loader-fill" data-case-study-loader-fill></div>
+      </div>
+    </div>
+    <div class="case-study-cursor" data-case-study-cursor aria-hidden="true"></div>
     ${renderCaseStudyHeader()}
     <main class="page case-study-page">
       <div class="case-study-shell">
-        <a class="back-link" href="/#projects">← Back to portfolio</a>
+        <a class="back-link" href="/#projects" data-case-study-animate data-case-study-delay="0.02">← Back to portfolio</a>
 
-        <section class="block case-study-hero">
+        <section class="block case-study-hero" data-case-study-animate data-case-study-delay="0.08">
           <p class="role-line">Case Study • ${escapeHtml(project.category)}</p>
-          <h1>${escapeHtml(project.name)}</h1>
+          <h1 class="case-study-title">${renderStaggeredWords(project.name)}</h1>
           <p class="hero-copy">${escapeHtml(project.summary)}</p>
 
-          <div class="chip-wrap">
+          <div class="chip-wrap" data-case-study-stagger>
             ${renderChips(project.stack)}
           </div>
 
-          <div class="hero-actions">
+          <div class="hero-actions" data-case-study-stagger>
+            ${platformAction}
             <a href="/#contact">Contact Darshan</a>
             <a href="${escapeHtml(profile.linkedin)}" target="_blank" rel="noreferrer">LinkedIn</a>
             <a href="${escapeHtml(profile.resumeLabel)}" target="_blank" rel="noreferrer">Resume</a>
           </div>
         </section>
 
-        <section class="case-study-grid">
+        <section class="case-study-grid" data-case-study-stagger>
           <article class="block case-study-panel">
             <h2>Project Overview</h2>
             <p>
@@ -381,19 +821,19 @@ ${serializeJsonLd(breadcrumbJsonLd)}
           </article>
         </section>
 
-        <section class="block">
+        <section class="block" data-case-study-animate>
           <h2>Execution Highlights</h2>
-          <ul class="project-highlights case-study-list">
+          <ul class="project-highlights case-study-list" data-case-study-stagger>
             ${renderListItems(projectHighlights)}
           </ul>
         </section>
 
-        <section class="block contact case-study-cta">
+        <section class="block contact case-study-cta" data-case-study-animate>
           <h2>Discuss This Project</h2>
           <p>
             Available for cloud engineering, DevOps, platform, and SRE roles with hands-on ownership across delivery and operations.
           </p>
-          <div class="hero-actions">
+          <div class="hero-actions" data-case-study-stagger>
             <a href="/#contact">Open Contact Form</a>
             <a href="${escapeHtml(profile.linkedin)}" target="_blank" rel="noreferrer">LinkedIn</a>
             <a href="${escapeHtml(profile.resumeLabel)}" target="_blank" rel="noreferrer">Resume</a>
@@ -402,6 +842,7 @@ ${serializeJsonLd(breadcrumbJsonLd)}
       </div>
     </main>
     <script>${caseStudyHeaderScript}</script>
+    <script>${caseStudyMotionScript}</script>
   </body>
 </html>
 `;

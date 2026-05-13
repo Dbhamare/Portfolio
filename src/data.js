@@ -316,7 +316,7 @@ export const experience = [
   {
     company:
       "Conga (Apttus Corporation) | Aress Software & Education Technologies (P) Ltd | Nashik, India",
-    title: "Senior Cloud Engineer Contractor",
+    title: "Senior Cloud Engineer",
     duration: "May 2023 - Aug 2024",
     points: [
       "Administered GitHub repositories, implemented CI/CD pipelines, and supported Agile workflows.",
@@ -417,7 +417,9 @@ const projectRecords = [
     category: "Full Stack",
     summary:
       "Built an online MERN-stack debate platform with role-based access for students and instructors, JWT authentication, unique IDs, and AI-driven debate analytics. I completed this project as part of my MSc Cloud Computing degree to gain hands-on development experience and was awarded a distinction.",
-    stack: ["MongoDB", "Express.js", "React", "Node.js", "JWT", "AI"]
+    stack: ["MongoDB", "Express.js", "React", "Node.js", "JWT", "AI"],
+    link: "https://livedebate.vercel.app/",
+    linkLabel: "Visit Platform"
   }
 ];
 
@@ -428,17 +430,17 @@ export const projects = projectRecords.map((project) => ({
 
 export const education = [
   {
-    degree: "MSc Cloud Computing",
+    degree: "MSc Cloud Computing (Full-Time)",
     school: "University of Leicester | Leicester, UK",
     duration: "Sep 2024 - Jan 2026"
   },
   {
-    degree: "Bachelor of Business Administration (Computer Application)",
+    degree: "Bachelor of Business Administration - Computer Application (Part-Time)",
     school: "KVN Naik Arts, Commerce & Science College | Nashik, India",
     duration: "Jul 2021 - Jul 2024"
   },
   {
-    degree: "Bachelor in Computer Engineering",
+    degree: "Bachelor in Computer Engineering (Full-Time)",
     school: "K. K. Wagh Institute of Engineering Education and Research | Nashik, India",
     duration: "Aug 2016 - Dec 2020"
   }
