@@ -394,131 +394,44 @@ const caseStudyMotionScript = `(() => {
   const shouldSmoothScroll = finePointer && !prefersReducedMotion;
 
   if (shouldSmoothScroll) {
-    let currentScroll = window.scrollY;
-    let targetScroll = currentScroll;
-    let isAnimatingScroll = false;
-
-    const maxScroll = () =>
-      Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-    const clampScroll = (value) => Math.min(Math.max(value, 0), maxScroll());
-
-    const animateScroll = () => {
-      isAnimatingScroll = true;
-      currentScroll += (targetScroll - currentScroll) * 0.12;
-
-      if (Math.abs(targetScroll - currentScroll) < 0.5) {
-        currentScroll = targetScroll;
-        window.scrollTo(0, currentScroll);
-        isAnimatingScroll = false;
-        return;
+    if (typeof Lenis !== "undefined") {
+      const lenis = new Lenis();
+      function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
       }
-
-      window.scrollTo(0, currentScroll);
-      window.requestAnimationFrame(animateScroll);
-    };
-
-    const startSmoothScroll = () => {
-      if (!isAnimatingScroll) {
-        window.requestAnimationFrame(animateScroll);
-      }
-    };
-
-    window.addEventListener(
-      "wheel",
-      (event) => {
-        if (event.ctrlKey || event.metaKey) return;
-        event.preventDefault();
-        targetScroll = clampScroll(targetScroll + event.deltaY);
-        startSmoothScroll();
-      },
-      { passive: false }
-    );
-
-    window.addEventListener(
-      "keydown",
-      (event) => {
-        const activeTag = document.activeElement?.tagName;
-        if (/INPUT|TEXTAREA|SELECT/.test(activeTag || "")) return;
-
-        const viewportStep = window.innerHeight * 0.86;
-        const keySteps = {
-          ArrowDown: 92,
-          ArrowUp: -92,
-          PageDown: viewportStep,
-          PageUp: -viewportStep,
-          Home: -Infinity,
-          End: Infinity,
-          " ": event.shiftKey ? -viewportStep : viewportStep
-        };
-
-        if (!(event.key in keySteps)) return;
-        event.preventDefault();
-
-        const step = keySteps[event.key];
-        if (step === Infinity) {
-          targetScroll = maxScroll();
-        } else if (step === -Infinity) {
-          targetScroll = 0;
-        } else {
-          targetScroll = clampScroll((isAnimatingScroll ? targetScroll : window.scrollY) + step);
-        }
-
-        currentScroll = window.scrollY;
-        startSmoothScroll();
-      },
-      { passive: false }
-    );
-
-    document.addEventListener("click", (event) => {
-      const link = event.target.closest("a[href^='#']");
-      if (!link) return;
-
-      const id = link.getAttribute("href").slice(1);
-      const target = id ? document.getElementById(id) : document.body;
-      if (!target) return;
-
-      event.preventDefault();
-      currentScroll = window.scrollY;
-      targetScroll = clampScroll(target.getBoundingClientRect().top + window.scrollY - 88);
-      startSmoothScroll();
-    });
-
-    window.addEventListener(
-      "scroll",
-      () => {
-        if (!isAnimatingScroll) {
-          currentScroll = window.scrollY;
-          targetScroll = currentScroll;
-        }
-      },
-      { passive: true }
-    );
-
-    window.addEventListener("resize", () => {
-      targetScroll = clampScroll(targetScroll);
-    });
+      requestAnimationFrame(raf);
+    }
   }
 })();`;
 
-const [{ render }, template] = await Promise.all([
-  import(pathToFileURL(serverEntryPath).href),
-  readFile(distIndexPath, "utf8")
-]);
+const isDev = process.env.VITE_DEV_SERVER === 'true';
 
-if (typeof render !== "function") {
-  throw new Error(`Expected a render() export from ${serverEntryPath}`);
-}
+let render, template, prerenderedHomeHtml, stylesheetHref = '';
 
-const prerenderedHomeHtml = template.includes(rootMarker)
-  ? template.replace(rootMarker, `<div id="root">${render()}</div>`)
-  : template;
+if (!isDev) {
+  const [{ render: r }, t] = await Promise.all([
+    import(pathToFileURL(serverEntryPath).href),
+    readFile(distIndexPath, "utf8")
+  ]);
+  render = r;
+  template = t;
 
-const stylesheetHref = prerenderedHomeHtml.match(
-  /<link rel="stylesheet" crossorigin href="([^"]+)">/
-)?.[1];
+  if (typeof render !== "function") {
+    throw new Error(`Expected a render() export from ${serverEntryPath}`);
+  }
 
-if (!stylesheetHref) {
-  throw new Error("Expected a built stylesheet link in dist/index.html");
+  prerenderedHomeHtml = template.includes(rootMarker)
+    ? template.replace(rootMarker, `<div id="root">${render()}</div>`)
+    : template;
+
+  stylesheetHref = prerenderedHomeHtml.match(
+    /<link rel="stylesheet" crossorigin href="([^"]+)">/
+  )?.[1];
+
+  if (!stylesheetHref) {
+    throw new Error("Expected a built stylesheet link in dist/index.html");
+  }
 }
 
 const escapeHtml = (value = "") =>
@@ -742,6 +655,7 @@ const renderProjectPage = (project) => {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.svg" />
     <link rel="canonical" href="${escapeHtml(canonicalUrl)}" />
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
     <meta name="robots" content="index, follow" />
     <meta name="description" content="${escapeHtml(metaDescription)}" />
     <meta name="keywords" content="${escapeHtml(keywords)}" />
@@ -766,7 +680,7 @@ ${serializeJsonLd(creativeWorkJsonLd)}
     <script type="application/ld+json">
 ${serializeJsonLd(breadcrumbJsonLd)}
     </script>
-    <link rel="stylesheet" crossorigin href="${escapeHtml(stylesheetHref)}" />
+    ${isDev ? `<script type="module" src="/@vite/client"></script><script type="module">import "/src/styles.css";</script>` : `<link rel="stylesheet" crossorigin href="${escapeHtml(stylesheetHref)}" />`}
     <style>
 ${caseStudyMotionStyles}
     </style>
@@ -877,14 +791,18 @@ ${entries
 `;
 };
 
-await writeFile(distIndexPath, prerenderedHomeHtml);
+if (!isDev) {
+  await writeFile(distIndexPath, prerenderedHomeHtml);
 
-await Promise.all(
-  projects.map(async (project) => {
-    const projectDir = path.join(distDir, toOutputSubdir(buildProjectPath(project)));
-    await mkdir(projectDir, { recursive: true });
-    await writeFile(path.join(projectDir, "index.html"), renderProjectPage(project));
-  })
-);
+  await Promise.all(
+    projects.map(async (project) => {
+      const projectDir = path.join(distDir, toOutputSubdir(buildProjectPath(project)));
+      await mkdir(projectDir, { recursive: true });
+      await writeFile(path.join(projectDir, "index.html"), renderProjectPage(project));
+    })
+  );
 
-await writeFile(distSitemapPath, renderSitemap());
+  await writeFile(distSitemapPath, renderSitemap());
+}
+
+export { renderProjectPage };
