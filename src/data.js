@@ -442,7 +442,7 @@ export const education = [
   {
     degree: "Bachelor in Computer Engineering (Full-Time)",
     school: "K. K. Wagh Institute of Engineering Education and Research | Nashik, India",
-    duration: "Aug 2016 - Dec 2020"
+    duration: "Aug 2016 - Aug 2020"
   }
 ];
 
